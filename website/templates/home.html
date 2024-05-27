@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated%}
+        <h1>Welcome Admin</h1>
+
+
+    {% else %}
+
+        <h1>Home Page</h1>
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    {% endif %}
+
+
+{% endblock %}
