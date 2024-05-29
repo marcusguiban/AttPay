@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-# from .models import Record
+from .models import Attendance
 
 
 class SignUpForm(UserCreationForm):
@@ -30,3 +30,24 @@ class SignUpForm(UserCreationForm):
             self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
             self.fields['password2'].label = ''
             self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'	
+from django import forms
+from .models import Attendance
+
+class AttendanceForm(forms.ModelForm):
+    # TIME_IN = 'Time In'
+    # TIME_OUT = 'Time Out'
+    # STATUS_CHOICES = [
+    #     (TIME_IN, 'Time In'),
+    #     (TIME_OUT, 'Time Out'),
+    # ]
+    # DEFAULT_STATUS = TIME_IN 
+    first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"First Name", "class":"form-control"}), label="")
+    last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Last Name", "class":"form-control"}), label="")
+    email = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Email", "class":"form-control"}), label="")
+    duty_location = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Address", "class":"form-control"}), label="")
+    status = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Time in or Time out", "class":"form-control"}), label="")
+    # status = forms.ChoiceField(choices=STATUS_CHOICES,initial=DEFAULT_STATUS, widget=forms.Select(attrs={"class":"form-control"}), label="",)
+    class Meta:
+        model = Attendance
+        exclude = ("user",)
+

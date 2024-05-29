@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm
+from .forms import SignUpForm, AttendanceForm
+from .models import Attendance
 # Create your views here.
 def home(request):
     return render(request, 'home.html',)
@@ -44,3 +45,20 @@ def register_user(request):
         form = SignUpForm()
         return render(request, 'register.html',{'form':form})
     return render(request, 'register.html',{'form':form})
+
+def attendance_list(request):
+    attendances = Attendance.objects.all()
+    return render(request, 'attendanceList.html',{'attendances': attendances})
+
+def time_In(request):
+    form = AttendanceForm(request.POST or None)
+    if request.user.is_authenticated:
+            if request.method == "POST":
+                if form.is_valid():
+                    add_record = form.save()
+                    messages.success(request, "Record Added")
+                    return redirect('home')
+            return render(request, 'timeIn.html',{'form':form})
+    else:
+        messages.success(request, "You Must be logged in to add record")
+        return redirect('home')

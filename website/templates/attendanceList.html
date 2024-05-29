@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Time IN</th>
+        <th scope="col">Time OUT</th>
+        <th scope="col">email</th>
+        <th scope="col">Duty Location</th>  
+        <th scope="col">Status</th>  
+        <th scope="col">Salary</th>
+        <th scope="col">Working Hours</th>
+        <th scope="col">Salary Computation</th>
+        <th scope="col">ID</th>
+        {%if attendances %}
+        {% for attendance in attendances%}
+
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ attendance.first_name }} {{ attendance.last_name }}</td>
+            <td>{{ attendance.time_in }}</td>
+            <td>{{ attendance.time_out }}</td>
+            <td>{{ attendance.email }}</td>
+            <td>{{ attendance.duty_location }}</td>
+            <td>{{ attendance.status }}</td>
+            <td>{{ attendances.salary }}</td>
+            <td>{{ attendances.salary_computation }}</td>
+            <td>{{ attendance.work_hours }}</td>
+            <td>{{ attendance.id }}</td> 
+          </tr>
+          {% endfor %}
+          {% endif %}
+
+{% endblock %}
