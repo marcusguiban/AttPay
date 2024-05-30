@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm, AttendanceForm
+from .forms import SignUpForm, AttendanceForm, TimeOutForm
 from .models import Attendance
 # Create your views here.
 def home(request):
@@ -62,3 +62,34 @@ def time_In(request):
     else:
         messages.success(request, "You Must be logged in to add record")
         return redirect('home')
+    
+def attendance_record(request, pk):
+    if request.user.is_authenticated:
+        attendance_record = Attendance.objects.get(id=pk)
+        return render(request, 'attendanceRecord.html',{'attendance_record':attendance_record})
+    else:
+        messages.success(request, "You Must be logged in to view that page")
+        return redirect('home')
+    
+def delete_record(request, pk):
+    if request.user.is_authenticated:
+        delete_it = Attendance.objects.get(id=pk)
+        delete_it.delete()
+        messages.success(request, "Record Deleted Successfully")
+        return redirect('attendanceList')
+    else:
+        messages.success(request, "You Must be logged in to delete this record")
+        return redirect('attendanceList')
+    
+def time_Out(request, pk):
+	if request.user.is_authenticated:
+		current_record = Attendance.objects.get(id=pk)
+		form = TimeOutForm(request.POST or None, instance=current_record)
+		if form.is_valid():
+			form.save()
+			messages.success(request, "Record Has Been Updated!")
+			return redirect('attendanceList')
+		return render(request, 'timeOut.html', {'form':form})
+	else:
+		messages.success(request, "You Must Be Logged In...")
+		return redirect('attendanceList')
