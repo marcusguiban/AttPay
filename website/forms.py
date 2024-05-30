@@ -45,7 +45,12 @@ class AttendanceForm(forms.ModelForm):
 
 class TimeOutForm(forms.ModelForm):
 
-    status = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Timed Out", "class":"form-control"}), label="")
+    first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"First Name", "class":"form-control", "readonly": "readonly"}), label="")
+    last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Last Name", "class":"form-control", "readonly": "readonly"}), label="")
+    email = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Email", "class":"form-control", "readonly": "readonly"}), label="")
+    duty_location = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Duty Location", "class":"form-control", "readonly": "readonly"}), label="")
+    status = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Timed in", "class":"form-control"}), label="")
+
     class Meta:
         model = Attendance
         exclude = ("user",)

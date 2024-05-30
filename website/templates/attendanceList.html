@@ -5,6 +5,7 @@
     <thead class="table-dark">
       <tr>
         <th scope="col">Name</th>
+        <th scope="col">Date</th>
         <th scope="col">Time IN</th>
         <th scope="col">Time OUT</th>
         <th scope="col">email</th>
@@ -18,8 +19,10 @@
     </thead>
     <tbody>
         <tr>
+          {% comment %} |time:"H:i:s" {% endcomment %}
             <td>{{ attendance.first_name }} {{ attendance.last_name }}</td>
-            <td>{{ attendance.time_in }}</td>
+            <td>{{ attendance.date }}</td>
+            <td>{{ attendance.time_in}}</td>
             <td>{{ attendance.time_out }}</td>
             <td>{{ attendance.email }}</td>
             <td>{{ attendance.duty_location }}</td>

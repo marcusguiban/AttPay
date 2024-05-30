@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, AttendanceForm, TimeOutForm
 from .models import Attendance
+from django.urls import reverse
 # Create your views here.
 def home(request):
     return render(request, 'home.html',)
@@ -11,18 +12,24 @@ def login_user(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        #authenticate
+        # authenticate
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             messages.success(request, "You have been logged in!")
-            return redirect('home')
+            return redirect(reverse('welcome', kwargs={'username': username}))
         else:
-            messages.success(request, "Invalid credentials")
+            messages.error(request, "Invalid credentials")
             return redirect('login')
-        
     else:
-        return render(request, 'login.html',)
+        return render(request, 'login.html')
+    
+def welcome_view(request, username):
+    if request.user.is_authenticated and request.user.username == username:
+        return render(request, 'welcome.html', {'username': username})
+    else:
+        logout(request)
+        return redirect('home')  # Assuming 'home' is the name of your home page URL
 
 def logout_user(request):
     logout(request)
