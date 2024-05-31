@@ -4,15 +4,20 @@ from django.contrib import messages
 from .forms import SignUpForm, AttendanceForm, TimeOutForm
 from .models import Attendance
 from django.urls import reverse
+from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
 # Create your views here.
+
+# landing page
 def home(request):
     return render(request, 'home.html',)
 
+
+# login page (admin)
 def login_user(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        # authenticate
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -29,13 +34,17 @@ def welcome_view(request, username):
         return render(request, 'welcome.html', {'username': username})
     else:
         logout(request)
-        return redirect('home')  # Assuming 'home' is the name of your home page URL
+        return redirect('home')  
+    
 
+
+# logout
 def logout_user(request):
     logout(request)
     messages.success(request, "You have been logged out.")
     return redirect('home')
-    
+
+# register admin user (needs to be authententicated to run)
 def register_user(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -53,10 +62,16 @@ def register_user(request):
         return render(request, 'register.html',{'form':form})
     return render(request, 'register.html',{'form':form})
 
+# attendance_list admin (add security)
 def attendance_list(request):
     attendances = Attendance.objects.all()
+    for attendance in attendances:
+        computed_salary = calculate_computed_salary(attendance.time_in, attendance.time_out, attendance.salary)
+        attendance.computed_salary = computed_salary
     return render(request, 'attendanceList.html',{'attendances': attendances})
 
+
+# create time in (for employees) (add autofill) (add security)  
 def time_In(request):
     form = AttendanceForm(request.POST or None)
     if request.user.is_authenticated:
@@ -70,14 +85,22 @@ def time_In(request):
         messages.success(request, "You Must be logged in to add record")
         return redirect('home')
     
+
+
+ # admin attendance individual record
 def attendance_record(request, pk):
     if request.user.is_authenticated:
         attendance_record = Attendance.objects.get(id=pk)
-        return render(request, 'attendanceRecord.html',{'attendance_record':attendance_record})
+        # Calculate the computed salary for the attendance record
+        computed_salary = calculate_computed_salary(attendance_record.time_in, attendance_record.time_out, attendance_record.salary)
+        return render(request, 'attendanceRecord.html', {'attendance_record': attendance_record, 'computed_salary': computed_salary})
     else:
-        messages.success(request, "You Must be logged in to view that page")
+        messages.success(request, "You must be logged in to view that page")
         return redirect('home')
     
+
+
+    # deletion of record
 def delete_record(request, pk):
     if request.user.is_authenticated:
         delete_it = Attendance.objects.get(id=pk)
@@ -88,6 +111,9 @@ def delete_record(request, pk):
         messages.success(request, "You Must be logged in to delete this record")
         return redirect('attendanceList')
     
+
+# only time Out filled should be seen
+# only edit once
 def time_Out(request, pk):
 	if request.user.is_authenticated:
 		current_record = Attendance.objects.get(id=pk)
@@ -100,3 +126,13 @@ def time_Out(request, pk):
 	else:
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('attendanceList')
+
+
+
+def calculate_computed_salary(time_in, time_out, salary):
+    time_difference = datetime.combine(datetime.today(), time_out) - datetime.combine(datetime.today(), time_in)
+    hours_difference = time_difference.total_seconds() / 3600
+    salary_decimal = Decimal(salary)
+    computed_salary = (salary_decimal / Decimal(9)) * Decimal(hours_difference)
+    computed_salary = computed_salary.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    return computed_salary

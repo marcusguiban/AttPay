@@ -10,4 +10,6 @@ class Attendance(models.Model):
     last_name = models.CharField(max_length=50)
     email = models.CharField(max_length=100)
     duty_location = models.CharField(max_length=50)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, default=450)  # Default value set to 0
+    salary_computation = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 

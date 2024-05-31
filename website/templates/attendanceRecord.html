@@ -23,6 +23,15 @@
             <strong>Time Out: </strong>{{ attendance_record.time_out }}</p>
             
             <p class="card-text">
+                <strong>Total Working Hours: </strong>{{ attendance_record.computed_salary }}</p>
+
+            <p class="card-text">
+                <strong>Salary: </strong>{{ attendance_record.salary }}</p>
+            
+            <p class="card-text">
+                <strong>Computed Salary: </strong>{{ computed_salary }}</p>
+
+            <p class="card-text">
             <strong>ID: </strong>{{ attendance_record.id }}</p>
             <a href="{% url 'attendanceList' %}" class="btn btn-primary">Back</a>
             
@@ -31,7 +40,4 @@
             <a href="{% url 'time_Out' attendance_record.id %}" class="btn btn-secondary">Update</a> 
     </div>
   </div>
- 
-
-
 {% endblock %}

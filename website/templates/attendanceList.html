@@ -8,28 +8,31 @@
         <th scope="col">Date</th>
         <th scope="col">Time IN</th>
         <th scope="col">Time OUT</th>
-        <th scope="col">email</th>
+        <th scope="col">Salary</th> <!-- New header for hours difference -->
+        <th scope="col">Computed Salary</th> <!-- New header for hours difference -->
+        <th scope="col">Email</th>
         <th scope="col">Duty Location</th>  
         <th scope="col">Status</th>  
         <th scope="col">ID</th>
-        {%if attendances %}
-        {% for attendance in attendances%}
-
       </tr>
     </thead>
     <tbody>
+        {% if attendances %}
+        {% for attendance in attendances %}
         <tr>
-          {% comment %} |time:"H:i:s" {% endcomment %}
             <td>{{ attendance.first_name }} {{ attendance.last_name }}</td>
             <td>{{ attendance.date }}</td>
-            <td>{{ attendance.time_in}}</td>
+            <td>{{ attendance.time_in }}</td>
             <td>{{ attendance.time_out }}</td>
+            <td>{{ attendance.salary }}</td>
+            <td>{{ attendance.computed_salary }}</td> 
             <td>{{ attendance.email }}</td>
             <td>{{ attendance.duty_location }}</td>
             <td>{{ attendance.status }}</td>
             <td><a href="{% url 'attendance_record' attendance.id %}">{{ attendance.id }}</a></td> 
-          </tr>
-          {% endfor %}
-          {% endif %}
-
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
 {% endblock %}
