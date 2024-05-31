@@ -62,14 +62,17 @@ def register_user(request):
         return render(request, 'register.html',{'form':form})
     return render(request, 'register.html',{'form':form})
 
-# attendance_list admin (add security)
+# attendance_list admin
 def attendance_list(request):
-    attendances = Attendance.objects.all()
-    for attendance in attendances:
-        computed_salary = calculate_computed_salary(attendance.time_in, attendance.time_out, attendance.salary)
-        attendance.computed_salary = computed_salary
-    return render(request, 'attendanceList.html',{'attendances': attendances})
-
+    if request.user.is_authenticated:
+        attendances = Attendance.objects.all()
+        for attendance in attendances:
+            computed_salary = calculate_computed_salary(attendance.time_in, attendance.time_out, attendance.salary)
+            attendance.computed_salary = computed_salary
+        return render(request, 'attendanceList.html',{'attendances': attendances})
+    else:
+        messages.success(request, "You Must be logged in to add record")
+        return redirect('home')
 
 # create time in (for employees) (add autofill) (add security)  
 def time_In(request):
