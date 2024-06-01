@@ -43,13 +43,19 @@ class AttendanceForm(forms.ModelForm):
         exclude = ("user", "salary", "salary_computation")
 
 class TimeOutForm(forms.ModelForm):
-
-    first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"First Name", "class":"form-control", "readonly": "readonly"}), label="")
-    last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Last Name", "class":"form-control", "readonly": "readonly"}), label="")
-    email = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Email", "class":"form-control", "readonly": "readonly"}), label="")
-    duty_location = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Duty Location", "class":"form-control", "readonly": "readonly"}), label="")
+    
     status = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Timed in", "class":"form-control"}), label="")
+    salary_computation = forms.DecimalField(
+        required=True,
+        widget=forms.widgets.TextInput(attrs={"placeholder": "Timed in", "class": "form-control", "readonly": "readonly"}),
+        label=""
+    )
+    salary = forms.DecimalField(
+        required=True,
+        widget=forms.widgets.TextInput(attrs={"placeholder": "Timed in", "class": "form-control", "readonly": "readonly"}),
+        label=""
+    )
 
     class Meta:
         model = Attendance
-        exclude = ("user",)
+        exclude = ("user","first_name", "last_name","email","duty_location")
