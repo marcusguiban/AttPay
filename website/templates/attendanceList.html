@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h2>Welcome, {{ username }}</h2>
 <table class="table table-striped table-hover table-bordered">
     <thead class="table-dark">
       <tr>
         <th scope="col">Name</th>
+        <th scope="col">Employee ID</th>
         <th scope="col">Date</th>
         <th scope="col">Time IN</th>
         <th scope="col">Time OUT</th>
         <th scope="col">Salary</th> <!-- New header for hours difference -->
         <th scope="col">Computed Salary</th> <!-- New header for hours difference -->
-        <th scope="col">Email</th>
         <th scope="col">Duty Location</th>  
         <th scope="col">Status</th>  
         <th scope="col">ID</th>
@@ -20,16 +21,16 @@
         {% if attendances %}
         {% for attendance in attendances %}
         <tr>
-            <td>{{ attendance.first_name }} {{ attendance.last_name }}</td>
+            <td>{{ attendance.employee_Name }}</td>
+            <td>{{ attendance.employeeID }}</td>
             <td>{{ attendance.date }}</td>
             <td>{{ attendance.time_in }}</td>
             <td>{{ attendance.time_out }}</td>
             <td>{{ attendance.salary }}</td>
             <td>{{ attendance.computed_salary }}</td> 
-            <td>{{ attendance.email }}</td>
             <td>{{ attendance.duty_location }}</td>
-            <td>{{ attendance.status }}</td>
-            <td><a href="{% url 'attendance_record' attendance.id %}">{{ attendance.id }}</a></td> 
+            <td>{{ attendance.on_duty }}</td>
+            <td><a href="{% url 'attendance_record' username=username pk=attendance.id %}" class="btn btn-primary">{{ attendance.id }}</a></td> 
         </tr>
         {% endfor %}
         {% endif %}

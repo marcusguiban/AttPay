@@ -2,13 +2,14 @@
 
 {% block content %}
     {% if user.is_authenticated%}
-        <h1>Welcome Admin</h1>
+        <h1>Home Page</h1>
 
 
     {% else %}
 
         <h1>Home Page</h1>
-        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+        <a href="{% url 'login' %}" class="btn btn-primary">Admin Login</a>
+        <a href="{% url 'employeeLogin' %}" class="btn btn-primary">Employee Login</a>
     {% endif %}
 
 

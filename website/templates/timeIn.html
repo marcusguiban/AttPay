@@ -5,7 +5,7 @@
 <h1>Time IN</h1>
 <br/>
 
-<form method="POST" action="{% url 'time_In' %}">
+<form method="POST" action="{% url 'time_In' username=request.user.username %}">
 	{% csrf_token %}
 
 	{{ form.as_p }}

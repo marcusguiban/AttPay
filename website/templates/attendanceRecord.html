@@ -1,29 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="card">
-    <div class="card-header"><strong>
-        {{ attendance_record.first_name }} 
-        {{ attendance_record.last_name }}</strong>
+    <div class="card-header"><strong>{{ attendance_record.employee_Name }}</strong>
     </div>
-    <div class="card-body">
+    <div class="card-body"> 
         <p class="card-text">
-            <strong>Email: </strong>{{ attendance_record.email }}</p>
-            
+            <strong>Employee ID: </strong>{{ attendance_record.employeeID }}
+            </p>
             <p class="card-text">
-            <strong>duty_location: </strong>{{ attendance_record.duty_location }}
+            <strong>Duty Location: </strong>{{ attendance_record.duty_location }}
             </p>
             
             <p class="card-text">
-            <strong>status: </strong>{{ attendance_record.status }}</p>
+            <strong>On Duty: </strong>{{ attendance_record.on_duty }}</p>
             
             <p class="card-text">
             <strong>Time In: </strong>{{ attendance_record.time_in }}</p>
             
             <p class="card-text">
             <strong>Time Out: </strong>{{ attendance_record.time_out }}</p>
-            
-            <p class="card-text">
-                <strong>Total Working Hours: </strong>{{ attendance_record.computed_salary }}</p>
 
             <p class="card-text">
                 <strong>Salary: </strong>{{ attendance_record.salary }}</p>
@@ -33,11 +28,11 @@
 
             <p class="card-text">
             <strong>ID: </strong>{{ attendance_record.id }}</p>
-            <a href="{% url 'attendanceList' %}" class="btn btn-primary">Back</a>
+            <a href="{% url 'attendanceList' username=request.user.username%}" class="btn btn-primary">Back</a>
             
-             <a href="{% url 'delete_record' attendance_record.id %}" class="btn btn-danger">Delete</a>
+             <a href="{% url 'delete_record'  username=request.user.username pk=attendance_record.id %}" class="btn btn-danger">Delete</a>
 
-            <a href="{% url 'time_Out' attendance_record.id %}" class="btn btn-secondary">Update</a> 
+            <a href="{% url 'time_Out' username=request.user.username pk=attendance_record.id %}" class="btn btn-secondary">Time Out</a> 
     </div>
   </div>
 {% endblock %}

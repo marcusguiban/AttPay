@@ -32,28 +32,26 @@ class SignUpForm(UserCreationForm):
             self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'	
 
 class AttendanceForm(forms.ModelForm):
-    first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"First Name", "class":"form-control"}), label="")
-    last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Last Name", "class":"form-control"}), label="")
-    email = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Email", "class":"form-control"}), label="")
+    employeeID = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"ID", "class":"form-control"}), label="")
+    employee_Name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Name", "class":"form-control"}), label="")
     duty_location = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Duty Location", "class":"form-control"}), label="")
-    status = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Timed in", "class":"form-control"}), label="")
 
     class Meta:
         model = Attendance
-        exclude = ("user", "salary", "salary_computation")
+        exclude = ("user", "on_duty","salary", "salary_computation")
 
 class TimeOutForm(forms.ModelForm):
     
     status = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Timed in", "class":"form-control"}), label="")
     salary_computation = forms.DecimalField(
         required=True,
-        widget=forms.widgets.TextInput(attrs={"placeholder": "Timed in", "class": "form-control", "readonly": "readonly"}),
-        label=""
+        widget=forms.widgets.TextInput(attrs={ "class": "form-control", "readonly": "readonly"}),
+        label="Salary Computation:"
     )
     salary = forms.DecimalField(
         required=True,
-        widget=forms.widgets.TextInput(attrs={"placeholder": "Timed in", "class": "form-control", "readonly": "readonly"}),
-        label=""
+        widget=forms.widgets.TextInput(attrs={ "class": "form-control", "readonly": "readonly"}),
+        label="Salary:"
     )
 
     class Meta:
