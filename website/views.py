@@ -6,9 +6,6 @@ from .models import Attendance
 from django.urls import reverse
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
-# from django.utils import timezone
-# from django.contrib.auth.hashers import check_password
-from .models import Employee
 # Create your views here.
 
 # landing page
@@ -175,20 +172,5 @@ def calculate_computed_salary_timeout(time_in, salary):
 
 # Emloyeee functions
 
-
-def login_Employee(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        employee = authenticate(request, username=username, password=password)
-        if employee is not None:
-            login(request, employee)
-            messages.success(request, "You have been logged in!")
-            return redirect(reverse('welcome', kwargs={'username': username}))
-        else:
-            messages.error(request, "Invalid credentials")
-            return redirect('employeeLogin')
-    else:
-        return render(request, 'employeeLogin.html')
     
 
