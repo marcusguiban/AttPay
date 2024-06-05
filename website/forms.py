@@ -28,4 +28,17 @@ class TimeOutForm(forms.ModelForm):
     class Meta:
         model = Attendance
         exclude = ("user","first_name", "last_name","email","duty_location", "employeeID", "on_duty", "employee_Name")
-    
+
+
+class EditAttendanceFormAdmin(forms.ModelForm):
+    class Meta:
+        model = Attendance
+        fields = "__all__"
+        widgets = {
+            'employeeID': forms.TextInput(attrs={"placeholder": "ID", "class": "form-control"}),
+            'employee_Name': forms.TextInput(attrs={"placeholder": "Name", "class": "form-control"}),
+            'duty_location': forms.TextInput(attrs={"placeholder": "Duty Location", "class": "form-control"}),
+            'on_duty': forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            'salary': forms.NumberInput(attrs={"placeholder": "Salary", "class": "form-control"}),
+            'salary_computation': forms.NumberInput(attrs={"placeholder": "Salary Computation", "class": "form-control"}),
+        }

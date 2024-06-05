@@ -12,33 +12,58 @@
                           <a class="nav-link" href="{% url 'supervisor_register' %}">Supervisor Register</a>
                       </li>
                       <li class="nav-item">
+                          <span class="nav-link">|</span>
+                      </li>
+                      <li class="nav-item">
                           <a class="nav-link" href="{% url 'employee_register' %}">Employee Register</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="{% url 'employee_list' %}">Employee List</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="{% url 'supervisor_list' %}">Supervisor List</a>
-                  </li>
+                          <span class="nav-link">|</span>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="{% url 'supervisor_list' %}">Supervisor List</a>
+                      </li>
+                      <li class="nav-item">
+                          <span class="nav-link">|</span>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="{% url 'employee_list' %}">Employee List</a>
+                      </li>
+                      <li class="nav-item">
+                          <span class="nav-link">|</span>
+                      </li>
                   {% elif user.is_supervisor %}
                       <li class="nav-item">
                           <a class="nav-link" href="{% url 'employee_register' %}">Employee Register</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="{% url 'employee_list' %}">Employee List</a>
-                    </li>
+                          <span class="nav-link">|</span>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="{% url 'employee_list' %}">Employee List</a>
+                      </li>
+                      <li class="nav-item">
+                          <span class="nav-link">|</span>
+                      </li>
                   {% endif %}
                   <li class="nav-item">
                       <a class="nav-link" href="{% url 'attendanceList' username=request.user.username %}">Attendance List</a>
                   </li>
                   <li class="nav-item">
+                      <span class="nav-link">|</span>
+                  </li>
+                  <li class="nav-item">
                       <a class="nav-link" href="{% url 'time_In' username=request.user.username %}">Time IN</a>
                   </li>
                   <li class="nav-item">
+                      <span class="nav-link">|</span>
+                  </li>
+                  <li class="nav-item ml-auto">
                       <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                   </li>
-
-
+                  <li class="nav-item">
+                    <span class="nav-link">|</span>
+                </li>
               {% else %}
                   <li class="nav-item">
                       <a class="nav-link" href="{% url 'login' %}">Login</a>
@@ -48,3 +73,4 @@
       </div>
   </div>
 </nav>
+

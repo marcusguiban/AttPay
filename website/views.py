@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import  AttendanceForm, TimeOutForm
+from .forms import  AttendanceForm, TimeOutForm, EditAttendanceFormAdmin
 from .models import Attendance
 from django.urls import reverse
 from datetime import datetime
@@ -123,8 +123,6 @@ def time_Out(request, pk, username):
         messages.success(request, "You Must Be Logged In...")
         return redirect('home')
 
-
-
  # admin attendance individual record
 def attendance_record(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
@@ -134,7 +132,6 @@ def attendance_record(request, pk, username):
     else:
         messages.success(request, "You must be logged in to view that page")
         return redirect('home')
-    
 
 
     # deletion of record
@@ -147,14 +144,6 @@ def delete_record(request, pk,username):
     else:
         messages.success(request, "You Must be logged in to delete this record")
         return redirect('attendanceList', username=username)
-    
-
-
-
-
-
-
-
 # computations
 
 def truncate_to_minutes(time):
@@ -179,7 +168,23 @@ def calculate_computed_salary_timeout(time_in, salary):
 
 
 
-# Emloyeee functions
+def AdminUpdateAttendaceRecord(request, pk, username):
+    if request.user.is_authenticated and request.user.username == username:
+        if request.user.is_superuser:
+            current_record = Attendance.objects.get(id=pk)
+            form = EditAttendanceFormAdmin(request.POST or None, instance=current_record)
+            if request.method == "POST":
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, "Record has been updated successfully!")
+                    return redirect('attendanceList')
+            return render(request, 'AdminEditAttendance.html', {'form': form, 'username': username})
+        else:
+            messages.error(request, "You must be an admin to edit this.")
+            return redirect('home')
+    else:
+        messages.error(request, "You must be logged in.")
+        return redirect('home')
 
     
 
