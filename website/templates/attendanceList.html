@@ -2,38 +2,51 @@
 
 {% block content %}
 <h2>Welcome, {{ username }}</h2>
-<table class="table table-striped table-hover table-bordered">
-    <thead class="table-dark">
-      <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Employee ID</th>
-        <th scope="col">Date</th>
-        <th scope="col">Time IN</th>
-        <th scope="col">Time OUT</th>
-        <th scope="col">Salary</th> <!-- New header for hours difference -->
-        <th scope="col">Computed Salary</th> <!-- New header for hours difference -->
-        <th scope="col">Duty Location</th>  
-        <th scope="col">Status</th>  
-        <th scope="col">ID</th>
-      </tr>
-    </thead>
-    <tbody>
-        {% if attendances %}
-        {% for attendance in attendances %}
+
+{% if attendances %}
+  {% for attendance in attendances|dictsort:"date" %}
+    {% ifchanged attendance.date %}
+      {% if not forloop.first %}
+        </tbody>
+      </table>
+      <br>
+      {% endif %}
+      <table class="table table-striped table-hover table-bordered">
+      <thead class="table-dark">
         <tr>
-            <td>{{ attendance.employee_Name }}</td>
-            <td>{{ attendance.employeeID }}</td>
-            <td>{{ attendance.date }}</td>
-            <td>{{ attendance.time_in }}</td>
-            <td>{{ attendance.time_out }}</td>
-            <td>{{ attendance.salary }}</td>
-            <td>{{ attendance.computed_salary }}</td> 
-            <td>{{ attendance.duty_location }}</td>
-            <td>{{ attendance.on_duty }}</td>
-            <td><a href="{% url 'attendance_record' username=username pk=attendance.id %}" class="btn btn-primary">{{ attendance.id }}</a></td> 
+          <th scope="col" colspan="10">{{ attendance.date }}</th>
         </tr>
-        {% endfor %}
-        {% endif %}
-    </tbody>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Employee ID</th>
+          <th scope="col">Time IN</th>
+          <th scope="col">Time OUT</th>
+          <th scope="col">Salary</th> 
+          <th scope="col">Computed Salary</th> 
+          <th scope="col">Duty Location</th>  
+          <th scope="col">Status</th>  
+          <th scope="col">ID</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% endifchanged %}
+    <tr>
+        <td>{{ attendance.employee_Name }}</td>
+        <td>{{ attendance.employeeID }}</td>
+        <td>{{ attendance.time_in }}</td>
+        <td>{{ attendance.time_out }}</td>
+        <td>{{ attendance.salary }}</td>
+        <td>{{ attendance.computed_salary }}</td> 
+        <td>{{ attendance.duty_location }}</td>
+        <td>{% if attendance.on_duty %}TIMED IN{% else %}TIMED OUT{% endif %}</td>
+        <td><a href="{% url 'attendance_record' username=username pk=attendance.id %}" class="btn btn-primary">{{ attendance.id }}</a></td> 
+    </tr>
+  {% endfor %}
+  </tbody>
 </table>
+{% endif %}
 {% endblock %}
+
+
+
+
