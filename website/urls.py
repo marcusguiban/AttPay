@@ -12,5 +12,7 @@ urlpatterns = [
     path('delete_record/<str:username>/<int:pk>', views.delete_record, name='delete_record'),
     path('TimeOut/<str:username>/<int:pk>', views.time_Out, name='time_Out'),
     path('welcome/<str:username>/', views.welcome_view, name='welcome'),
+    path('notfound/', views.notfound, name='notfound'),
+
 
 ]

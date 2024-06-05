@@ -14,13 +14,13 @@
     <p>id: {{ user.id }}</p>
     <p>Email: {{ user.email }}!</p>
     <p>Last logged in: {{ user.last_login }}</p>
-    <p>Last logged in: {{ user.date_joined }}</p>
+    <p>Date Joined: {{ user.date_joined }}</p>
     {% elif user.is_superuser %}
     <p>Welcome, Admin {{ user.first_name }} {{ user.last_name }}</p>
     <p>id: {{ user.id }}</p>
     <p>Email: {{ user.email }}</p>
     <p>Last logged in: {{ user.last_login }}</p>
-    <p>Last logged in: {{ user.date_joined }}</p>
+    <p>Date Joined: {{ user.date_joined }}</p>
 
     {% else %}
     <p>Welcome, {{ user.first_name }} {{ user.last_name }}!</p>

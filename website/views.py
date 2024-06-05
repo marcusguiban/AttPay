@@ -13,6 +13,8 @@ from django.utils import timezone
 def home(request):
     return render(request, 'home.html',)
 
+def notfound(request):
+    return render(request, '404.html',)
 # login page (admin)
 def login_user(request):
     if request.method == 'POST':

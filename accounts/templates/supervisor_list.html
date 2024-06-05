@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>List of Supervisors</h2>
+
+{% if supervisors %}
+<ul>
+  {% for supervisor in supervisors %}
+  <li>{{ supervisor.user.first_name }} {{ supervisor.user.last_name }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No supervisors found.</p>
+{% endif %}
+{% endblock %}

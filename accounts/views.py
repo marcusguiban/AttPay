@@ -1,10 +1,8 @@
 from django.contrib.auth import login, logout,authenticate
 from django.shortcuts import redirect, render
-from .models import User
+from .models import User, Employee, Supervisor
 from .forms import EmployeeSignUpForm, SupervisorSignUpForm
 from django.views.generic import CreateView
-from django.urls import reverse
-
 def home(request):
     return render(request, 'home.html',)
 
@@ -27,4 +25,13 @@ class employee_register(CreateView):
         user = form.save()
         login(self.request, user)
         return redirect('/')
+    
+
+def employee_list(request):
+    employees = Employee.objects.all()
+    return render(request, 'employee_list.html', {'employees': employees})
+
+def supervisor_list(request):
+    supervisors = Supervisor.objects.all()
+    return render(request, 'supervisor_list.html', {'supervisors': supervisors})
     
