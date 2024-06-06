@@ -21,12 +21,12 @@
             <strong>ID: </strong>{{ supervisor_record.user.id }}</p>
              <a href="{% url 'supervisor_list' username=request.user.username%}" class="btn btn-primary">Back</a>
             {% comment %} {% if user.is_superuser %} {% endcomment %}
-             {% comment %} <a href="{% url 'delete_record'  username=request.user.username pk=attendance_record.id %}" class="btn btn-danger">Delete</a>
-             <a href="{% url 'Edit_attendance'  username=request.user.username pk=attendance_record.id %}" class="btn btn-primary">Edit</a>
-             {% elif user.is_supervisor %}
-             <a href="{% url 'delete_record'  username=request.user.username pk=attendance_record.id %}" class="btn btn-danger">Delete</a>
-             {% endif %}
-            <a href="{% url 'time_Out' username=request.user.username pk=attendance_record.id %}" class="btn btn-secondary">Time Out</a>   {% endcomment %}
+          {% comment %} <a href="{% url 'delete_record'  username=request.user.username pk=attendance_record.id %}" class="btn btn-danger">Delete</a> {% endcomment %}
+             <a href="{% url 'supervisor_update'  username=request.user.username pk=supervisor_record.user.id %}" class="btn btn-primary">Edit</a>
+             {% comment %} {% elif user.is_supervisor %} {% endcomment %}
+             {% comment %} <a href="{% url 'delete_record'  username=request.user.username pk=attendance_record.id %}" class="btn btn-danger">Delete</a> {% endcomment %}
+             {% comment %} {% endif %} {% endcomment %}
+            {% comment %} <a href="{% url 'time_Out' username=request.user.username pk=attendance_record.id %}" class="btn btn-secondary">Time Out</a>    {% endcomment %}
     </div>
   </div>
 {% endblock %}

@@ -79,3 +79,16 @@ def employee_update(request, pk, username):
 	else:
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
+     
+def supervisor_update(request, pk, username):
+	if request.user.is_authenticated and request.user.username == username:
+		current_record = Supervisor.objects.get(user_id=pk)
+		form = SupervisorUpdateForm(request.POST or None, instance=current_record)
+		if form.is_valid():
+			form.save()
+			messages.success(request, "Record Has Been Updated!")
+			return redirect('home')
+		return render(request, 'supervisor_update.html', {'form':form, 'username': username})
+	else:
+		messages.success(request, "You Must Be Logged In...")
+		return redirect('home')
