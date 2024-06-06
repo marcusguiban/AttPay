@@ -2,25 +2,25 @@
 
 {% block content %}
     {% if user.is_employee %}
-    <p>Welcome, Employee {{ user.first_name }} {{ user.last_name }}!</p>
-    <p>id: {{ user.id }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Your occupation: {{ user.employee.occupation }}</p>
-    <p>Your phone number: {{ user.employee.phone_number }}</p>
-    <p>Last logged in: {{ user.last_login }}</p>
-    <p>Date Joined: {{ user.date_joined }}</p>
+        <p>Welcome, Employee {{ user.first_name }} {{ user.last_name }}!</p>
+        <p>id: {{ user.id }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Your occupation: {{ user.employee.occupation }}</p>
+        <p>Your phone number: {{ user.employee.phone_number }}</p>
+        <p>Last logged in: {{ user.last_login }}</p>
+        <p>Date Joined: {{ user.date_joined }}</p>
     {% elif user.is_supervisor %}
-    <p>Welcome, supervisor {{ user.first_name }} {{ user.last_name }}</p>
-    <p>id: {{ user.id }}</p>
-    <p>Email: {{ user.email }}!</p>
-    <p>Last logged in: {{ user.last_login }}</p>
-    <p>Date Joined: {{ user.date_joined }}</p>
+        <p>Welcome, supervisor {{ user.first_name }} {{ user.last_name }}</p>
+        <p>id: {{ user.id }}</p>
+        <p>Email: {{ user.email }}!</p>
+        <p>Last logged in: {{ user.last_login }}</p>
+        <p>Date Joined: {{ user.date_joined }}</p>
     {% elif user.is_superuser %}
-    <p>Welcome, Admin {{ user.first_name }} {{ user.last_name }}</p>
-    <p>id: {{ user.id }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Last logged in: {{ user.last_login }}</p>
-    <p>Date Joined: {{ user.date_joined }}</p>
+        <p>Welcome, Admin {{ user.first_name }} {{ user.last_name }}</p>
+        <p>id: {{ user.id }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Last logged in: {{ user.last_login }}</p>
+        <p>Date Joined: {{ user.date_joined }}</p>
 
     {% else %}
     <p>Welcome, {{ user.first_name }} {{ user.last_name }}!</p>

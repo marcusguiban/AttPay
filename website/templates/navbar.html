@@ -9,25 +9,25 @@
               {% if user.is_authenticated %}
                   {% if user.is_superuser %}
                       <li class="nav-item">
-                          <a class="nav-link" href="{% url 'supervisor_register' %}">Supervisor Register</a>
+                          <a class="nav-link" href="{% url 'supervisor_register' username=request.user.username%}">Supervisor Register</a>
                       </li>
                       <li class="nav-item">
                           <span class="nav-link">|</span>
                       </li>
                       <li class="nav-item">
-                          <a class="nav-link" href="{% url 'employee_register' %}">Employee Register</a>
+                          <a class="nav-link" href="{% url 'employee_register' username=request.user.username %}">Employee Register</a>
                       </li>
                       <li class="nav-item">
                           <span class="nav-link">|</span>
                       </li>
                       <li class="nav-item">
-                          <a class="nav-link" href="{% url 'supervisor_list' %}">Supervisor List</a>
+                          <a class="nav-link" href="{% url 'supervisor_list'   username=request.user.username%}">Supervisor List</a>
                       </li>
                       <li class="nav-item">
                           <span class="nav-link">|</span>
                       </li>
                       <li class="nav-item">
-                          <a class="nav-link" href="{% url 'employee_list' %}">Employee List</a>
+                          <a class="nav-link" href="{% url 'employee_list'  username=request.user.username%}">Employee List</a>
                       </li>
                       <li class="nav-item">
                           <span class="nav-link">|</span>
@@ -40,7 +40,7 @@
                           <span class="nav-link">|</span>
                       </li>
                       <li class="nav-item">
-                          <a class="nav-link" href="{% url 'employee_list' %}">Employee List</a>
+                          <a class="nav-link" href="{% url 'employee_list'  username=request.user.username%}">Employee List</a>
                       </li>
                       <li class="nav-item">
                           <span class="nav-link">|</span>

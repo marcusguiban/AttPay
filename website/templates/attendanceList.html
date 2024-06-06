@@ -36,7 +36,7 @@
         <td>{{ attendance.time_in }}</td>
         <td>{{ attendance.time_out }}</td>
         <td>{{ attendance.salary }}</td>
-        <td>{{ attendance.computed_salary }}</td> 
+        <td>{{ attendance.salary_computation }}</td> 
         <td>{{ attendance.duty_location }}</td>
         <td>{% if attendance.on_duty %}TIMED IN{% else %}TIMED OUT{% endif %}</td>
         <td><a href="{% url 'attendance_record' username=username pk=attendance.id %}" class="btn btn-primary">{{ attendance.id }}</a></td> 
