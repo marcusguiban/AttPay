@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import  AttendanceForm, TimeOutForm, EditAttendanceFormAdmin
+from .forms import  AttendanceForm, TimeOutForm, EditAttendanceFormAdmin, AttendanceFormAdmin
 from .models import Attendance
 from django.urls import reverse
 from datetime import datetime
@@ -48,6 +48,7 @@ def logout_user(request):
 
 # attendance_list admin
 def attendance_list(request, username):
+    form = AttendanceFormAdmin(request.POST or None)
     if request.user.is_authenticated and request.user.username == username:
         if request.user.is_employee:
             employeeID = request.user.id
@@ -56,25 +57,31 @@ def attendance_list(request, username):
             attendances = Attendance.objects.all()
             
         for attendance in attendances:
+            time_difference = datetime.combine(datetime.today(), attendance.time_out) - datetime.combine(datetime.today(), attendance.time_in)
+            hours = int(time_difference.total_seconds() / 3600)
+            minutes = int((time_difference.total_seconds() % 3600) / 60)
+            attendance.time_difference = f"{hours} hours {minutes} minutes"  # Formatting time_difference
             computed_salary = calculate_computed_salary(attendance.time_in, attendance.time_out, attendance.salary)
             attendance.computed_salary = computed_salary
-        return render(request, 'attendanceList.html',{'attendances': attendances, 'username': username})
+
+        if request.user.is_superuser:
+            if request.method == "POST" and form.is_valid():
+                add_record = form.save()
+                messages.success(request, "Record Added")
+                return redirect('attendanceList', username=username)
+            return render(request, 'attendanceList.html', {'form': form, 'attendances': attendances, 'username': username})
+        return render(request, 'attendanceList.html', {'attendances': attendances, 'username': username})
     else:
         messages.success(request, "You must be logged in to view the attendance list")
         return redirect('home')
 
-
-
-
-
-
-# create time in (for employees) (add autofill) (add security)  
+# create time in
 def time_In(request, username):
-    if request.user.is_authenticated and request.user.username == username:
+    if request.user.is_authenticated and (request.user.username == username or request.user.is_superuser):
         today_records = Attendance.objects.filter(date=timezone.now().date(), employeeID=request.user.id)
         if today_records.exists():
             messages.error(request, "You have already timed in for today.")
-            return redirect('home')
+            return redirect('attendanceList', username=username)
 
         if request.method == "POST":
             form = AttendanceForm(request.POST)
@@ -83,7 +90,7 @@ def time_In(request, username):
                 attendance.user = request.user
                 attendance.save()
                 messages.success(request, "Record Added")
-                return redirect('home')
+                return redirect('attendanceList', username=username)
         else:
             initial_data = {
                 'employeeID': request.user.id,
@@ -93,32 +100,42 @@ def time_In(request, username):
         return render(request, 'timeIn.html', {'form': form})
     else:
         return redirect('attendanceList', username=username)
-    
     # time out
 def time_Out(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
         current_record = Attendance.objects.get(id=pk)
         truncated_time_in = truncate_to_minutes(current_record.time_in)
         truncated_time_out = truncate_to_minutes(current_record.time_out)
+        current_time = datetime.now().time()
         if truncated_time_in == truncated_time_out:
             form = TimeOutForm(request.POST or None, instance=current_record)
             
             computed_salary = None
-            if current_record.time_in and current_record.salary:
+            working_hours = None
+            if current_record.time_in and current_record.time_out:
+                # Compute salary
                 computed_salary = calculate_computed_salary_timeout(current_record.time_in, current_record.salary)
+                
+                # Compute work hours
+                time_difference = datetime.combine(datetime.today(), current_time) - datetime.combine(datetime.today(), current_record.time_in)
+                hours = int(time_difference.total_seconds() / 3600)
+                minutes = int((time_difference.total_seconds() % 3600) / 60)
+                working_hours = f"{hours} hours {minutes} minutes"
             
             if computed_salary is not None:
                 form.initial['salary_computation'] = computed_salary
+            if working_hours is not None:
+                form.initial['working_hours'] = working_hours
             
             if form.is_valid():
                 form.instance.on_duty = False
                 form.save()
                 messages.success(request, "Record Has Been Updated!")
-                return redirect('attendanceList', {'username': username})
-            return render(request, 'timeOut.html', {'form': form, 'computed_salary': computed_salary})
+                return redirect('attendanceList', username=username)
+            return render(request, 'timeOut.html', {'form': form, 'computed_salary': computed_salary, 'working_hours': working_hours})
         else:
             messages.warning(request, "Record already timed out.")
-            return redirect('attendanceList', {'username': username})
+            return redirect('attendanceList', username=username)
     else:
         messages.success(request, "You Must Be Logged In...")
         return redirect('home')
@@ -127,8 +144,15 @@ def time_Out(request, pk, username):
 def attendance_record(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
         attendance_record = Attendance.objects.get(id=pk)
+        
+        time_difference = datetime.combine(datetime.today(), attendance_record.time_out) - datetime.combine(datetime.today(), attendance_record.time_in)
+        hours = int(time_difference.total_seconds() / 3600)
+        minutes = int((time_difference.total_seconds() % 3600) / 60)
+        formatted_time_difference = f"{hours} hours {minutes} minutes"  # Formatting time_difference
+        
         computed_salary = calculate_computed_salary(attendance_record.time_in, attendance_record.time_out, attendance_record.salary)
-        return render(request, 'attendanceRecord.html', {'attendance_record': attendance_record, 'computed_salary': computed_salary, 'username': username})
+        
+        return render(request, 'attendanceRecord.html', {'attendance_record': attendance_record, 'computed_salary': computed_salary, 'formatted_time_difference': formatted_time_difference, 'username': username})
     else:
         messages.success(request, "You must be logged in to view that page")
         return redirect('home')
@@ -145,6 +169,24 @@ def delete_record(request, pk,username):
         messages.success(request, "You Must be logged in to delete this record")
         return redirect('attendanceList', username=username)
 # computations
+def AdminUpdateAttendaceRecord(request, pk, username):
+    if request.user.is_authenticated and request.user.username == username:
+        if request.user.is_superuser:
+            current_record = Attendance.objects.get(id=pk)
+            form = EditAttendanceFormAdmin(request.POST or None, instance=current_record)
+            if request.method == "POST":
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, "Record has been updated successfully!")
+                    return redirect('attendanceList')
+            return render(request, 'AdminEditAttendance.html', {'form': form, 'username': username})
+        else:
+            messages.error(request, "You must be an admin to edit this.")
+            return redirect('home')
+    else:
+        messages.error(request, "You must be logged in.")
+        return redirect('home')
+    
 
 def truncate_to_minutes(time):
     return time.replace(second=0, microsecond=0)
@@ -168,23 +210,7 @@ def calculate_computed_salary_timeout(time_in, salary):
 
 
 
-def AdminUpdateAttendaceRecord(request, pk, username):
-    if request.user.is_authenticated and request.user.username == username:
-        if request.user.is_superuser:
-            current_record = Attendance.objects.get(id=pk)
-            form = EditAttendanceFormAdmin(request.POST or None, instance=current_record)
-            if request.method == "POST":
-                if form.is_valid():
-                    form.save()
-                    messages.success(request, "Record has been updated successfully!")
-                    return redirect('attendanceList')
-            return render(request, 'AdminEditAttendance.html', {'form': form, 'username': username})
-        else:
-            messages.error(request, "You must be an admin to edit this.")
-            return redirect('home')
-    else:
-        messages.error(request, "You must be logged in.")
-        return redirect('home')
+
 
     
 

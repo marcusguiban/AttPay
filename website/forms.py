@@ -9,9 +9,23 @@ class AttendanceForm(forms.ModelForm):
 
     class Meta:
         model = Attendance
-        exclude = ("user", "on_duty", "salary", "salary_computation")
+        exclude = ("user", "on_duty", "salary", "salary_computation", "working_hours")
 
+
+class AttendanceFormAdmin(forms.ModelForm):
+    employeeID = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "ID", "class": "form-control", }), label="")
+    employee_Name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Name", "class": "form-control", }), label="")
+    duty_location = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Duty Location", "class": "form-control"}), label="")
+
+    class Meta:
+        model = Attendance
+        exclude = ("user", "on_duty", "salary", "salary_computation", "working_hours")
 class TimeOutForm(forms.ModelForm):
+    working_hours = forms.CharField(
+        required=True,
+        widget=forms.widgets.TextInput(attrs={ "class": "form-control", "readonly": "readonly"}),
+        label="Working Hours:"
+    )
     
     salary = forms.DecimalField(
         required=True,
