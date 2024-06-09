@@ -1,16 +1,73 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if user.is_authenticated%}
+    <div class="container">
         <h1>Home Page</h1>
-
-
-    {% else %}
-
-        <h1>Home Page</h1>
-        <a href="{% url 'login' %}" class="btn btn-primary"> Login</a>
-
-    {% endif %}
-
-
+        
+        {% if user.is_authenticated %}
+            <div class="row">
+                <!-- Admin Info Column -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if user.is_employee %}
+                                <p><strong>Welcome, Employee {{ user.first_name }} {{ user.last_name }}!</strong></p>
+                                <p>id: {{ user.id }}</p>
+                                <p>Email: {{ user.email }}</p>
+                                <p>Your occupation: {{ user.employee.occupation }}</p>
+                                <p>Your phone number: {{ user.employee.phone_number }}</p>
+                                <p>Last logged in: {{ user.last_login }}</p>
+                                <p>Date Joined: {{ user.date_joined }}</p>
+                            {% elif user.is_supervisor %}
+                                <p><strong>Welcome, Supervisor {{ user.first_name }} {{ user.last_name }}</strong></p>
+                                <p>id: {{ user.id }}</p>
+                                <p>Email: {{ user.email }}</p>
+                                <p>Last logged in: {{ user.last_login }}</p>
+                                <p>Date Joined: {{ user.date_joined }}</p>
+                            {% elif user.is_superuser %}
+                                <p><strong>Welcome, Admin {{ user.first_name }} {{ user.last_name }}</strong></p>
+                                <p>id: {{ user.id }}</p>
+                                <p>Email: {{ user.email }}</p>
+                                <p>Last logged in: {{ user.last_login }}</p>
+                                <p>Date Joined: {{ user.date_joined }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Register Links Column -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            {% if user.is_superuser or user.is_supervisor %}
+                                <h3>Register</h3>
+                                {% if user.is_superuser %}
+                                    <p><a href="{% url 'supervisor_register' username=user.username %}">Register Supervisor</a></p>
+                                {% endif %}
+                                <p><a href="{% url 'employee_register' username=user.username %}">Register Employee</a></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- List Links Column -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-end">
+                            {% if user.is_superuser or user.is_supervisor %}
+                                <h3>List</h3>
+                                {% if user.is_superuser %}
+                                    <p><a href="{% url 'supervisor_list' username=user.username %}">Supervisor List</a></p>
+                                {% endif %}
+                                <p><a href="{% url 'employee_list' username=user.username %}">Employee List</a></p>
+                                <p><a href="{% url 'attendanceList' username=user.username %}">Attendance List</a></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+        
+        {% endif %}
+    </div>
 {% endblock %}
