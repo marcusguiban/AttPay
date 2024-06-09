@@ -10,11 +10,13 @@
         <p>Last logged in: {{ user.last_login }}</p>
         <p>Date Joined: {{ user.date_joined }}</p>
     {% elif user.is_supervisor %}
-        <p>Welcome, supervisor {{ user.first_name }} {{ user.last_name }}</p>
+        <p>Welcome, Supervisor {{ user.first_name }} {{ user.last_name }}</p>
         <p>id: {{ user.id }}</p>
-        <p>Email: {{ user.email }}!</p>
+        <p>Email: {{ user.email }}</p>
         <p>Last logged in: {{ user.last_login }}</p>
         <p>Date Joined: {{ user.date_joined }}</p>
+        <a href="{% url 'employee_register' username=user.username %}">Register Employee</a>
+        <a href="{% url 'employee_list' username=user.username %}">Employee List</a>
     {% elif user.is_superuser %}
         <p>Welcome, Admin {{ user.first_name }} {{ user.last_name }}</p>
         <p>id: {{ user.id }}</p>
@@ -23,6 +25,6 @@
         <p>Date Joined: {{ user.date_joined }}</p>
 
     {% else %}
-    <p>Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
+        <p>Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
     {% endif %}
 {% endblock %}
