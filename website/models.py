@@ -3,11 +3,11 @@ from django.contrib.auth.models import AbstractUser
 
     
 class Attendance(models.Model):
-    date = models.DateField(auto_now_add=True)
-    time_in = models.TimeField(auto_now_add=True)
-    time_out = models.TimeField(auto_now=True)
+    date = models.DateField()
+    time_in = models.TimeField()
+    time_out = models.TimeField()
     on_duty = models.BooleanField(default=True)
-    working_hours = models.CharField(max_length=50, default="0 0")
+    working_hours = models.CharField(max_length=50, default="0 hours 0 minutes")
     employeeID = models.CharField(max_length=100, default="Unknown")
     employee_Name = models.CharField(max_length=100, default="Unknown")  # Manually define a default value
     duty_location = models.CharField(max_length=50)

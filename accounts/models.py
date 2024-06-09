@@ -14,6 +14,7 @@ class Supervisor(models.Model):
     phone_number = models.CharField(max_length=20)
     location = models.CharField(max_length=20)
     occupation = models.CharField(max_length=20)
+    on_duty = models.BooleanField(default=False)
 
 
 class Employee(models.Model):
@@ -21,4 +22,4 @@ class Employee(models.Model):
     phone_number = models.CharField(max_length=20)
     location = models.CharField(max_length=20)
     occupation = models.CharField(max_length=20)
-
+    on_duty = models.BooleanField(default=False)

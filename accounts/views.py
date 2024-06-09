@@ -15,7 +15,7 @@ class supervisor_register(CreateView):
     template_name = 'supervisor_register.html'
 
     def form_valid(self, form):
-        user = form.save()
+        user = form.save() 
         login(self.request, user)
         return redirect('/')
     
@@ -37,7 +37,9 @@ class employee_register(CreateView):
 def employee_list(request, username):
     if request.user.is_authenticated and request.user.username == username:
         employees = Employee.objects.all()
-        return render(request, 'employee_list.html', {'employees': employees,'username': username})
+        employees_on_duty = employees.filter(on_duty=True)
+        employees_not_on_duty = employees.filter(on_duty=False)
+        return render(request, 'employee_list.html', {'employees': employees, 'employees_on_duty': employees_on_duty, 'employees_not_on_duty': employees_not_on_duty, 'username': username})
     else:
         messages.success(request, "You must be logged in to view the attendance list")
         return redirect('home')
@@ -100,7 +102,7 @@ def delete_employee(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
         try:
             employee = Employee.objects.get(user_id=pk)
-            user = employee.user  # Assuming Employee model has a 'user' field referencing the User model
+            user = employee.user  
             employee.delete()
             user.delete()
             messages.success(request, "Employee Record Deleted Successfully")
@@ -114,7 +116,7 @@ def delete_supervisor(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
         try:
             supervisor = Supervisor.objects.get(user_id=pk)
-            user = supervisor.user  # Assuming Supervisor model has a 'user' field referencing the User model
+            user = supervisor.user 
             supervisor.delete()
             user.delete()
             messages.success(request, "Supervisor Record Deleted Successfully")

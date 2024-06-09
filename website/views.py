@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import  AttendanceForm, TimeOutForm, EditAttendanceFormAdmin, AttendanceFormAdmin
@@ -88,6 +88,9 @@ def time_In(request, username):
             if form.is_valid():
                 attendance = form.save(commit=False)
                 attendance.user = request.user
+                attendance.date = datetime.now().date()  # Set date to current date
+                attendance.time_in = datetime.now().time()  # Set time_in to current time
+                attendance.time_out = datetime.now().time()  # Set time_in to current time
                 attendance.save()
                 messages.success(request, "Record Added")
                 return redirect('attendanceList', username=username)
@@ -95,6 +98,8 @@ def time_In(request, username):
             initial_data = {
                 'employeeID': request.user.id,
                 'employee_Name': f"{request.user.first_name} {request.user.last_name}",
+                'date': datetime.now().date(),  # Set initial date to current date
+                'time_in': datetime.now().time(),  # Set initial time_in to current time
             }
             form = AttendanceForm(initial=initial_data)
         return render(request, 'timeIn.html', {'form': form})
@@ -126,6 +131,9 @@ def time_Out(request, pk, username):
                 form.initial['salary_computation'] = computed_salary
             if working_hours is not None:
                 form.initial['working_hours'] = working_hours
+                
+            # Set initial value for time_out to current time
+            form.initial['time_out'] = current_time
             
             if form.is_valid():
                 form.instance.on_duty = False
@@ -169,16 +177,19 @@ def delete_record(request, pk,username):
         messages.success(request, "You Must be logged in to delete this record")
         return redirect('attendanceList', username=username)
 # computations
-def AdminUpdateAttendaceRecord(request, pk, username):
+def AdminUpdateAttendanceRecord(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
         if request.user.is_superuser:
-            current_record = Attendance.objects.get(id=pk)
-            form = EditAttendanceFormAdmin(request.POST or None, instance=current_record)
+            current_record = get_object_or_404(Attendance, pk=pk)
             if request.method == "POST":
+                form = EditAttendanceFormAdmin(request.POST, instance=current_record)
                 if form.is_valid():
                     form.save()
                     messages.success(request, "Record has been updated successfully!")
-                    return redirect('attendanceList')
+                    return redirect('home')
+            else:
+                # Set initial values for time_in and time_out fields
+                form = EditAttendanceFormAdmin(instance=current_record, initial={'time_in': current_record.time_in, 'time_out': current_record.time_out})
             return render(request, 'AdminEditAttendance.html', {'form': form, 'username': username})
         else:
             messages.error(request, "You must be an admin to edit this.")

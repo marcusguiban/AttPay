@@ -12,6 +12,7 @@
       <th scope="col">Phone Number</th>
       <th scope="col">Location</th>
       <th scope="col">Occupation</th>
+      <th scope="col">On Duty</th>
       <th scope="col">ID</th>
     </tr>
   </thead>
@@ -23,6 +24,7 @@
       <td>{{ supervisor.phone_number }}</td>
       <td>{{ supervisor.location }}</td>
       <td>{{ supervisor.occupation }}</td>
+      <td>{{ supervisor.on_duty }}</td>
       <td><a href="{% url 'supervisor_record' username=username pk=supervisor.user.id %}" class="btn btn-info">{{ supervisor.user.id }}</td>
     </tr>
     {% endfor %}

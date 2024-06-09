@@ -11,7 +11,7 @@ urlpatterns = [
     path('attendance_record/<str:username>/<int:pk>', views.attendance_record, name='attendance_record'),
     path('delete_record/<str:username>/<int:pk>', views.delete_record, name='delete_record'),
     path('TimeOut/<str:username>/<int:pk>', views.time_Out, name='time_Out'),
-    path('Edit_attendance/<str:username>/<int:pk>', views.AdminUpdateAttendaceRecord, name='Edit_attendance'),
+    path('Edit_attendance/<str:username>/<int:pk>', views.AdminUpdateAttendanceRecord, name='Edit_attendance'),
     path('welcome/<str:username>/', views.welcome_view, name='welcome'),
     path('notfound/', views.notfound, name='notfound'),
 ]

@@ -62,10 +62,10 @@ class SupervisorUpdateForm(ModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.EmailField(required=True)
-
+    on_duty = forms.BooleanField(required=False)
     class Meta:
         model = Supervisor
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation', 'on_duty']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -74,6 +74,7 @@ class SupervisorUpdateForm(ModelForm):
             self.fields['first_name'].initial = self.instance.user.first_name
             self.fields['last_name'].initial = self.instance.user.last_name
             self.fields['email'].initial = self.instance.user.email
+            self.fields['on_duty'].initial = self.instance.user.on_duty
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -84,6 +85,7 @@ class SupervisorUpdateForm(ModelForm):
             user.first_name = self.cleaned_data['first_name']
             user.last_name = self.cleaned_data['last_name']
             user.email = self.cleaned_data['email']
+            user.on_duty = self.cleaned_data['on_duty']
             user.save()
         return instance
     
@@ -94,10 +96,9 @@ class EmployeeUpdateForm(ModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.EmailField(required=True)
-
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation', 'on_duty']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -116,5 +117,6 @@ class EmployeeUpdateForm(ModelForm):
             user.first_name = self.cleaned_data['first_name']
             user.last_name = self.cleaned_data['last_name']
             user.email = self.cleaned_data['email']
+            user.on_duty = self.cleaned_data['on_duty']
             user.save()
         return instance
