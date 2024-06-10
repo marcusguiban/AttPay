@@ -1,6 +1,6 @@
 
 from django import forms
-from .models import Attendance
+from .models import Attendance, PaySlip
 
 class AttendanceForm(forms.ModelForm):
     employeeID = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "ID", "class": "form-control", "readonly": "readonly"}), label="")
@@ -64,4 +64,17 @@ class EditAttendanceFormAdmin(forms.ModelForm):
 
     class Meta:
         model = Attendance
+        fields = "__all__"
+
+class PayslipForm(forms.ModelForm):
+    employeeID = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "ID", "class": "form-control"}), label="Employee ID")
+    employee_Name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Name", "class": "form-control"}), label="Employee Name")
+    date_start = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={"placeholder": "Start Date", "class": "form-control", "type": "date"}), label="Start Date")
+    date_end = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={"placeholder": "End Date", "class": "form-control", "type": "date"}), label="End Date")
+    working_hours = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Working Hours", "class": "form-control"}), label="Working Hours")
+    paid = forms.BooleanField(required=False, widget=forms.widgets.NumberInput(attrs={"placeholder": "Paid", "class": "form-control"}), label="Paid")
+    total_salary = forms.DecimalField(required=True, widget=forms.widgets.NumberInput(attrs={"placeholder": "Total Salary", "class": "form-control"}), label="Total Salary")
+
+    class Meta:
+        model = PaySlip
         fields = "__all__"

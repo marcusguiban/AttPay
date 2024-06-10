@@ -1,15 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-
-<div class="col-md-6 offset-md-3">
-<h1>Update Record</h1>
-<br/>
-<form method="POST">
-	{% csrf_token %}
-	{{ form.as_p }}
-    <br/>
-  <button type="submit" class="btn btn-secondary">Update Record</button>
-</form>
+{% load widget_tweaks %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="text-center">Update Record</h1>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+              {{ form.as_p }}
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary">Update Record</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
 {% endblock %}

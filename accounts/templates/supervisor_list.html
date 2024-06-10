@@ -30,6 +30,56 @@
     {% endfor %}
   </tbody>
 </table>
+<div class="container">
+  <div class="row">
+      <div class="col-md-6">
+          <h2>Supervisors On Duty</h2>
+          {% if supervisors_on_duty %}
+          <table class="table table-striped table-hover table-bordered">
+              <thead class="table-success">
+                  <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">ID</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for supervisor in supervisors_on_duty %}
+                  <tr>
+                      <td>{{ supervisor.user.first_name }} {{ supervisor.user.last_name }}</td>
+                      <td><a href="{% url 'supervisor_record' username=username pk=supervisor.user.id %}" class="btn btn-success">{{ supervisor.user.id }}</a></td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          {% else %}
+          <p>No Supervisors on duty.</p>
+          {% endif %}
+      </div>
+      <div class="col-md-6">
+          <h2>Supervisors Off Duty</h2>
+          {% if supervisors_not_on_duty %}
+          <table class="table table-striped table-hover table-bordered">
+              <thead class="table-secondary">
+                  <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">ID</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for supervisor in supervisors_not_on_duty %}
+                  <tr>
+                      <td>{{ supervisor.user.first_name }} {{ supervisor.user.last_name }}</td>
+                      <td><a href="{% url 'supervisor_record' username=username pk=supervisor.user.id %}" class="btn btn-secondary">{{ supervisor.user.id }}</a></td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          {% else %}
+          <p>No Supervisor off duty.</p>
+          {% endif %}
+      </div>
+  </div>
+</div>
 {% else %}
 <p>No supervisors found.</p>
 {% endif %}

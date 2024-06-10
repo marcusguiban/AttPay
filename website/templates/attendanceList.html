@@ -18,6 +18,7 @@
         </tr>
         <tr>
           <th scope="col">Name</th>
+          <th scope="col">Employee ID</th>
           <th scope="col">Time IN</th>
           <th scope="col">Time OUT</th> 
           <th scope="col">Working Hours</th> 
@@ -36,6 +37,7 @@
     {% endifchanged %}
     <tr>
         <td>{{ attendance.employee_Name }}</td>
+        <td>{{ attendance.id }}</td>
         <td>{{ attendance.time_in }}</td>
         <td>{{ attendance.time_out }}</td>
         <td>{{ attendance.time_difference }}</td>

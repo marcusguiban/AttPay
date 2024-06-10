@@ -14,4 +14,5 @@ urlpatterns = [
     path('Edit_attendance/<str:username>/<int:pk>', views.AdminUpdateAttendanceRecord, name='Edit_attendance'),
     path('welcome/<str:username>/', views.welcome_view, name='welcome'),
     path('notfound/', views.notfound, name='notfound'),
+    path('payslip/form', views.create_payslip, name='payslip'),
 ]

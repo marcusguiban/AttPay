@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import  AttendanceForm, TimeOutForm, EditAttendanceFormAdmin, AttendanceFormAdmin
+from .forms import  AttendanceForm, TimeOutForm, EditAttendanceFormAdmin, AttendanceFormAdmin, PayslipForm
 from .models import Attendance
 from django.urls import reverse
 from datetime import datetime
@@ -198,6 +198,22 @@ def AdminUpdateAttendanceRecord(request, pk, username):
         messages.error(request, "You must be logged in.")
         return redirect('home')
     
+def create_payslip(request):
+    form = PayslipForm(request.POST or None)
+    if request.user.is_authenticated:
+            if request.method == "POST":
+                if form.is_valid():
+                    add_playslip = form.save()
+                    messages.success(request, "Record Added")
+                    return redirect('home')
+            return render(request, 'create_payslip.html',{'form':form})
+    else:
+        messages.success(request, "You Must be logged in to add record")
+        return redirect('home')
+
+
+
+
 
 def truncate_to_minutes(time):
     return time.replace(second=0, microsecond=0)

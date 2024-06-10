@@ -2,78 +2,73 @@
 
 {% block content %}
 <div class="card">
-    <div class="card-header"><strong>{{ employee_record.user.first_name }} {{ employee_record.user.last_name }}</strong>
-    </div>
+    <div class="card-header"><strong>{{ employee_record.user.first_name }} {{ employee_record.user.last_name }}</strong></div>
     <div class="card-body"> 
         <p class="card-text">
             <strong>Email: </strong>{{ employee_record.user.email }}
-            </p>
-            <p class="card-text">
+        </p>
+        <p class="card-text">
             <strong>Phone_number: </strong>{{ employee_record.phone_number }}
-            </p>
+        </p>
             
-            <p class="card-text">
-            <strong>Location: </strong>{{ employee_record.location }}</p>
+        <p class="card-text">
+            <strong>Location: </strong>{{ employee_record.location }}
+        </p>
             
-            <p class="card-text">
-            <strong>Occupation: </strong>{{ employee_record.occupation }}</p>
+        <p class="card-text">
+            <strong>Occupation: </strong>{{ employee_record.occupation }}
+        </p>
             
-            <p class="card-text">
-            <strong>ID: </strong>{{ employee_record.user.id }}</p>
-            <a href="{% url 'attendanceList' username=request.user.username%}" class="btn btn-primary">Back</a>
-            {% comment %} {% if user.is_superuser %} {% endcomment %}
-             <a href="{% url 'delete_employee'  username=request.user.username pk=employee_record.user.id %}" class="btn btn-danger">Delete</a>
-             <a href="{% url 'employee_update'  username=request.user.username pk=employee_record.user.id %}" class="btn btn-primary">Edit</a>
+        <p class="card-text">
+            <strong>ID: </strong>{{ employee_record.user.id }}
+        </p>
+        <a href="{% url 'attendanceList' username=request.user.username%}" class="btn btn-primary">Back</a>
+        {% comment %} {% if user.is_superuser %} {% endcomment %}
+        <a href="{% url 'delete_employee'  username=request.user.username pk=employee_record.user.id %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'employee_update'  username=request.user.username pk=employee_record.user.id %}" class="btn btn-primary">Edit</a>
     </div>
-  </div>
-  {% if attendances %}
-  {% for attendance in attendances|dictsort:"date" %}
-    {% ifchanged attendance.date %}
-      {% if not forloop.first %}
-        </tbody>
-      </table>
-      <br>
-      {% endif %}
-      <table class="table table-striped table-hover table-bordered">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col" colspan="10">{{ attendance.date }}</th>
-        </tr>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Time IN</th>
-          <th scope="col">Time OUT</th> 
-          <th scope="col">Working Hours</th> 
-          <th scope="col">Salary</th> 
-          <th scope="col">Computed Salary</th> 
-          <th scope="col">Duty Location</th>  
-          <th scope="col">Status</th>  
-          {% if user.is_employee%}
-          <th scope="col">Time out</th>
-          {%else%}
-          <th scope="col">ID</th>
-          {%endif%}
-        </tr>
-      </thead>
-      <tbody>
-    {% endifchanged %}
+</div>
+
+{% if attendances %}
+<table class="table table-striped table-hover table-bordered">
+<thead class="table-dark">
     <tr>
-        <td>{{ attendance.employee_Name }}</td>
-        <td>{{ attendance.time_in }}</td>
-        <td>{{ attendance.time_out }}</td>
-        <td>{{ attendance.time_difference }}</td>
-        <td>{{ attendance.salary }}</td>
-        <td>{{ attendance.salary_computation }}</td> 
-        <td>{{ attendance.duty_location }}</td>
-        <td>{% if attendance.on_duty %}TIMED IN{% else %}TIMED OUT{% endif %}</td>
-        {% if user.is_employee%}
-        <td><a href="{% url 'time_Out' username=request.user.username pk=attendance.id %}" class="btn btn-primary">Time Out</a></td>        
-        {%else%}
-        <td><a href="{% url 'attendance_record' username=username pk=attendance.id %}" class="btn btn-primary">{{ attendance.id }}</a></td> 
-        {%endif%}
-      </tr>
-  {% endfor %}
-  </tbody>
+        <th scope="col">Date</th>
+        <th scope="col">Name</th>
+        <th scope="col">Time IN</th>
+        <th scope="col">Time OUT</th> 
+        <th scope="col">Working Hours</th> 
+        <th scope="col">Salary</th> 
+        <th scope="col">Computed Salary</th> 
+        <th scope="col">Duty Location</th>  
+        <th scope="col">Status</th>  
+        {% if user.is_employee %}
+        <th scope="col">Time out</th>
+        {% else %}
+        <th scope="col">ID</th>
+        {% endif %}
+    </tr>
+</thead>
+<tbody>
+{% for attendance in attendances %}
+<tr>
+    <td>{{ attendance.date }}</td>
+    <td>{{ attendance.employee_Name }}</td>
+    <td>{{ attendance.time_in }}</td>
+    <td>{{ attendance.time_out }}</td>
+    <td>{{ attendance.time_difference }}</td>
+    <td>{{ attendance.salary }}</td>
+    <td>{{ attendance.salary_computation }}</td> 
+    <td>{{ attendance.duty_location }}</td>
+    <td>{% if attendance.on_duty %}TIMED IN{% else %}TIMED OUT{% endif %}</td>
+    {% if user.is_employee %}
+    <td><a href="{% url 'time_Out' username=request.user.username pk=attendance.id %}" class="btn btn-primary">Time Out</a></td>        
+    {% else %}
+    <td><a href="{% url 'attendance_record' username=username pk=attendance.id %}" class="btn btn-primary">{{ attendance.id }}</a></td> 
+    {% endif %}
+</tr>
+{% endfor %}
+</tbody>
 </table>
-{%endif%}
+{% endif %}
 {% endblock %}
