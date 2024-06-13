@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><strong>{{ schedule_record.employeeID }}</strong>
+    </div>
+    <div class="card-body"> 
+
+        <p class="card-text">
+        <strong>Monday:</strong>{{ schedule_record.monday_start }} - {{ schedule_record.monday_end }}
+        </p>
+        <p class="card-text">
+            <strong>Tuesday:</strong>{{ schedule_record.tuesday_start }} - {{ schedule_record.tuesday_end }}
+        </p>
+        <p class="card-text">
+            <strong>Wednesday:</strong>{{ schedule_record.wednesday_start }} - {{ schedule_record.wednesday_end }}
+        </p>
+        <p class="card-text">
+            <strong>Tuesday:</strong>{{ schedule_record.thursday_start }} - {{ schedule_record.thursday_end }}
+        </p>
+        <p class="card-text">
+            <strong>Tuesday:</strong>{{ schedule_record.friday_start }} - {{ schedule_record.friday_end }}
+        </p>
+        <p class="card-text">
+            <strong>Tuesday:</strong>{{ schedule_record.saturday_start }} - {{ schedule_record.saturday_end }}
+        </p>
+        <p class="card-text">
+            <strong>Sunday:</strong>{{ schedule_record.sunday_start }} - {{ schedule_record.sunday_end }}
+        </p>
+            <p class="card-text">
+            <strong>ID: </strong>{{ schedule_record.id }}</p>
+            <a href="{% url 'schedule_list' username=request.user.username%}" class="btn btn-primary">Back</a>
+           {% comment %} {% if user.is_superuser %} {% endcomment %}
+             <a href="{% url 'schedule_delete'  username=request.user.username pk=schedule_record.id %}" class="btn btn-danger">Delete</a>
+              <a href="{% url 'schedule_update'  username=request.user.username pk=schedule_record.id %}" class="btn btn-primary">Edit</a>
+             {% comment %} {% elif user.is_supervisor %}
+             <a href="{% url 'delete_record'  username=request.user.username pk=attendance_record.id %}" class="btn btn-danger">Delete</a>
+             {% endif %}
+            <a href="{% url 'time_Out' username=request.user.username pk=attendance_record.id %}" class="btn btn-secondary">Time Out</a>    {% endcomment %}
+    </div>
+  </div>
+{% endblock %}

@@ -2,16 +2,16 @@
 {% block content %}
 
 <div class="col-md-6 offset-md-3">
-<h1>Add Record</h1>
+<h1>Add Schedule</h1>
 <br/>
 
-<form method="POST" action="{% url 'payslip' username=request.user.username%}">
+<form method="POST" action="{% url 'schedule_create' username=request.user.username%}">
 	{% csrf_token %}
 
 	{{ form.as_p }}
 
 <br/>
-  <button type="submit" class="btn btn-secondary">Create PaySlip</button>
+  <button type="submit" class="btn btn-secondary">Create Schedule</button>
    <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
 
 </form>

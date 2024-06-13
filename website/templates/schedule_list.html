@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated%}
+  <table class="table table-striped table-hover table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Employee ID:</th>
+        <th scope="col">Monday</th>
+        <th scope="col">Tuesday</th>
+        <th scope="col">Wednesday</th>
+        <th scope="col">Thursday</th>
+        <th scope="col">Friday</th>
+        <th scope="col">Saturday</th>
+        <th scope="col">Sunday</th>
+        <th scope="col">Schedule ID</th>
+
+      </tr>
+    </thead>
+    <tbody>
+  {%if schedules %}
+  {% for schedule in schedules%}
+  <tr>
+    <td>{{ schedule.employeeID }}</td>
+    <td>{{ schedule.monday_start }} - {{ schedule.monday_end }}</td>
+    <td>{{ schedule.tuesday_start }} - {{ schedule.tuesday_end }}</td>
+    <td>{{ schedule.wednesday_start }} - {{ schedule.wednesday_end }}</td>
+    <td>{{ schedule.thursday_start }} - {{ schedule.thursday_end }}</td>
+    <td>{{ schedule.friday_start }} - {{ schedule.friday_end }}</td>
+    <td>{{ schedule.saturday_start }} - {{ schedule.saturday_end }}</td>
+    <td>{{ schedule.sunday_start }} - {{ schedule.sunday_end }}</td>
+    {% comment %} <td>{{ schedule.id }}</td> {% endcomment %}
+    <td><a href="{% url 'schedule_record' username=request.user.username pk=schedule.id %}" class="btn btn-primary">{{ schedule.id }}</a></td> 
+  </tr>
+  {% endfor %}
+{% endif %}
+{% endif %}
+
+{% endblock %}

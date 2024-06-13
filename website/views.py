@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import  AttendanceForm, TimeOutForm, EditAttendanceFormAdmin, AttendanceFormAdmin, PayslipForm
-from .models import Attendance
+from .forms import  AttendanceForm, TimeOutForm, EditAttendanceFormAdmin, AttendanceFormAdmin, PayslipForm, ScheduleForm
+from .models import Attendance, PaySlip, Schedule
 from django.urls import reverse
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
@@ -198,22 +198,121 @@ def AdminUpdateAttendanceRecord(request, pk, username):
         messages.error(request, "You must be logged in.")
         return redirect('home')
     
-def create_payslip(request):
+
+
+
+
+
+def create_payslip(request, username):
     form = PayslipForm(request.POST or None)
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.username == username:
             if request.method == "POST":
                 if form.is_valid():
                     add_playslip = form.save()
                     messages.success(request, "Record Added")
                     return redirect('home')
-            return render(request, 'create_payslip.html',{'form':form})
+            return render(request, 'create_payslip.html',{'form':form,  'username': username})
+    else:
+        messages.success(request, "You Must be logged in to add record")
+        return redirect('home')
+    
+
+
+def payslip_list(request, username):
+    paySlips = PaySlip.objects.all()
+    if request.user.is_authenticated and request.user.username == username:
+        return render(request, 'payslip_list.html',{'paySlips': paySlips, 'username': username})
+    else:
+        messages.success(request, "You Must be logged in to view the list")
+        return redirect('home')
+
+
+def payslip_record(request, pk, username):
+    if request.user.is_authenticated and request.user.username == username:
+        payslip_record = PaySlip.objects.get(id=pk)
+        return render(request, 'payslip_record.html', {'payslip_record': payslip_record, 'username': username})
+    else:
+        messages.success(request, "You must be logged in to view that page")
+        return redirect('home')
+
+
+
+def delete_payslip(request, pk,username):
+    if request.user.is_authenticated and request.user.username == username:
+        delete_it = PaySlip.objects.get(id=pk)
+        delete_it.delete()
+        messages.success(request, "Record Deleted Successfully")
+        return redirect('payslip_list',  username=username)
+    else:
+        messages.success(request, "You Must be logged in to delete this record")
+        return redirect('home')
+
+def update_payslip(request, pk, username):
+    if request.user.is_authenticated and request.user.username == username:
+        payslip_record = PaySlip.objects.get(id=pk)
+        form = PayslipForm(request.POST or None, instance=payslip_record)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Record Has Been Updated!")
+            return redirect('payslip_list',  username=username)
+        return render(request, 'payslip_update.html', {'form':form, 'username': username})
+    else:
+        messages.success(request, "You Must Be Logged In...")
+        return redirect('home')
+
+def schedule_create(request, username):
+    form = ScheduleForm(request.POST or None)
+    if request.user.is_authenticated and request.user.username == username:
+            if request.method == "POST":
+                if form.is_valid():
+                    add_playslip = form.save()
+                    messages.success(request, "Record Added")
+                    return redirect('home')
+            return render(request, 'schedule_create.html',{'form':form,  'username': username})
     else:
         messages.success(request, "You Must be logged in to add record")
         return redirect('home')
 
 
+def schedule_list(request, username):
+    schedules = Schedule.objects.all()
+    if request.user.is_authenticated and request.user.username == username:
+        return render(request, 'schedule_list.html',{'schedules': schedules, 'username': username})
+    else:
+        messages.success(request, "You Must be logged in to view the list")
+        return redirect('home')
 
 
+def schedule_update(request, pk, username):
+    if request.user.is_authenticated and request.user.username == username:
+        schedule_record = Schedule.objects.get(id=pk)
+        form = ScheduleForm(request.POST or None, instance=schedule_record)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Schedule Has Been Updated!")
+            return redirect('schedule_list',  username=username)
+        return render(request, 'schedule_update.html', {'form':form, 'username': username})
+    else:
+        messages.success(request, "You Must Be Logged In...")
+        return redirect('home')
+
+def schedule_record(request, pk, username):
+    if request.user.is_authenticated and request.user.username == username:
+        schedule_record = Schedule.objects.get(id=pk)
+        return render(request, 'schedule_record.html', {'schedule_record': schedule_record, 'username': username})
+    else:
+        messages.success(request, "You must be logged in to view that page")
+        return redirect('home')
+
+def schedule_delete(request, pk,username):
+    if request.user.is_authenticated and request.user.username == username:
+        delete_it = Schedule.objects.get(id=pk)
+        delete_it.delete()
+        messages.success(request, "Schedule Deleted Successfully")
+        return redirect('schedule_list',  username=username)
+    else:
+        messages.success(request, "You Must be logged in to delete this record")
+        return redirect('home')
 
 def truncate_to_minutes(time):
     return time.replace(second=0, microsecond=0)

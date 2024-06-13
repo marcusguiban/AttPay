@@ -30,7 +30,16 @@
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'payslip' %}">Payslip</a>
+            <a class="nav-link" href="{% url 'payslip'  username=request.user.username %}">Payslip</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'payslip_list'  username=request.user.username %}">Payslip List</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'schedule_create'  username=request.user.username %}">Schedule Create</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'schedule_list'  username=request.user.username %}">Schedule list</a>
           </li>
         {% else %}
           <li class="nav-item">

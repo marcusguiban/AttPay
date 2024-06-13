@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><strong>{{ payslip_record.employee_name }}</strong>
+    </div>
+    <div class="card-body"> 
+        <p class="card-text">
+            <strong>Start Date </strong>{{ payslip_record.date_start }}
+            </p>
+            <p class="card-text">
+            <strong>End Date: </strong>{{ payslip_record.date_end }}
+            </p>
+            
+            <p class="card-text">
+            <strong>Employee ID: </strong>{{ payslip_record.employeeID }}</p>
+
+            <p class="card-text">
+            <strong>Total Salary: </strong>{{ payslip_record.total_salary }}</p>
+            
+            <p class="card-text">
+            <strong>Paid: </strong>{{ payslip_record.paid }}</p>
+
+            <p class="card-text">
+            <strong>ID: </strong>{{ payslip_record.id }}</p>
+            <a href="{% url 'payslip_list' username=request.user.username%}" class="btn btn-primary">Back</a>
+           {% comment %} {% if user.is_superuser %} {% endcomment %}
+             <a href="{% url 'delete_payslip'  username=request.user.username pk=payslip_record.id %}" class="btn btn-danger">Delete</a>
+              <a href="{% url 'update_payslip'  username=request.user.username pk=payslip_record.id %}" class="btn btn-primary">Edit</a>
+             {% comment %} {% elif user.is_supervisor %}
+             <a href="{% url 'delete_record'  username=request.user.username pk=attendance_record.id %}" class="btn btn-danger">Delete</a>
+             {% endif %}
+            <a href="{% url 'time_Out' username=request.user.username pk=attendance_record.id %}" class="btn btn-secondary">Time Out</a>    {% endcomment %}
+    </div>
+  </div>
+{% endblock %}
