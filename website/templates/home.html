@@ -2,72 +2,88 @@
 
 {% block content %}
     <div class="container">
-        <h1>Home Page</h1>
+        <h1 class="text-center">Announcement!</h1>
+        <h2>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.lorem20
+        </h2>
         
         {% if user.is_authenticated %}
-            <div class="row">
-                <!-- Admin Info Column -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            {% if user.is_employee %}
-                                <p><strong>Welcome, Employee {{ user.first_name }} {{ user.last_name }}!</strong></p>
-                                <p>id: {{ user.id }}</p>
-                                <p>Email: {{ user.email }}</p>
-                                <p>Your occupation: {{ user.employee.occupation }}</p>
-                                <p>Your phone number: {{ user.employee.phone_number }}</p>
-                                <p>Last logged in: {{ user.last_login }}</p>
-                                <p>Date Joined: {{ user.date_joined }}</p>
-                            {% elif user.is_supervisor %}
-                                <p><strong>Welcome, Supervisor {{ user.first_name }} {{ user.last_name }}</strong></p>
-                                <p>id: {{ user.id }}</p>
-                                <p>Email: {{ user.email }}</p>
-                                <p>Last logged in: {{ user.last_login }}</p>
-                                <p>Date Joined: {{ user.date_joined }}</p>
-                            {% elif user.is_superuser %}
-                                <p><strong>Welcome, Admin {{ user.first_name }} {{ user.last_name }}</strong></p>
-                                <p>id: {{ user.id }}</p>
-                                <p>Email: {{ user.email }}</p>
-                                <p>Last logged in: {{ user.last_login }}</p>
-                                <p>Date Joined: {{ user.date_joined }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
+            <div class="d-flex justify-content-center my-5">
+                <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                    Open Menu
+                </button>
+            </div>
+            
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasSidebarLabel">User Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
-                
-                <!-- Register Links Column -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            {% if user.is_superuser or user.is_supervisor %}
-                                <h3>Register</h3>
-                                {% if user.is_superuser %}
-                                    <p><a href="{% url 'supervisor_register' username=user.username %}">Register Supervisor</a></p>
-                                {% endif %}
-                                <p><a href="{% url 'employee_register' username=user.username %}">Register Employee</a></p>
-                            {% endif %}
-                        </div>
+                <div class="offcanvas-body">
+                    <!-- Admin Info Section -->
+                    <div class="mb-3">
+                        {% if user.is_employee %}
+                            <p><strong>Welcome, Employee {{ user.first_name }} {{ user.last_name }}!</strong></p>
+                            <p>id: {{ user.id }}</p>
+                            <p>Email: {{ user.email }}</p>
+                            <p>Your occupation: {{ user.employee.occupation }}</p>
+                            <p>Your phone number: {{ user.employee.phone_number }}</p>
+                            <p>Last logged in: {{ user.last_login }}</p>
+                            <p>Date Joined: {{ user.date_joined }}</p>
+                        {% elif user.is_supervisor %}
+                            <p><strong>Welcome, Supervisor {{ user.first_name }} {{ user.last_name }}</strong></p>
+                            <p>id: {{ user.id }}</p>
+                            <p>Email: {{ user.email }}</p>
+                            <p>Last logged in: {{ user.last_login }}</p>
+                            <p>Date Joined: {{ user.date_joined }}</p>
+                        {% elif user.is_superuser %}
+                            <p><strong>Welcome, Admin {{ user.first_name }} {{ user.last_name }}</strong></p>
+                            <p>id: {{ user.id }}</p>
+                            <p>Email: {{ user.email }}</p>
+                            <p>Last logged in: {{ user.last_login }}</p>
+                            <p>Date Joined: {{ user.date_joined }}</p>
+                        {% endif %}
                     </div>
-                </div>
-                
-                <!-- List Links Column -->
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body text-end">
-                            {% if user.is_superuser or user.is_supervisor %}
-                                <h3>List</h3>
-                                {% if user.is_superuser %}
-                                    <p><a href="{% url 'supervisor_list' username=user.username %}">Supervisor List</a></p>
-                                {% endif %}
-                                <p><a href="{% url 'employee_list' username=user.username %}">Employee List</a></p>
-                                <p><a href="{% url 'attendanceList' username=user.username %}">Attendance List</a></p>
+                    
+                    <!-- Register Links Section -->
+                    {% if user.is_superuser or user.is_supervisor %}
+                        <div class="mb-3">
+                            <h3>Register</h3>
+                            {% if user.is_superuser %}
+                                <p><a href="{% url 'supervisor_register' username=user.username %}">Register Supervisor</a></p>
                             {% endif %}
+                            <p><a href="{% url 'employee_register' username=user.username %}">Register Employee</a></p>
                         </div>
-                    </div>
+                        
+                        <!-- List Links Section -->
+
+                            <h3>List</h3>
+                            {% if user.is_superuser %}
+                                <p><a href="{% url 'supervisor_list' username=user.username %}">Supervisor List</a></p>
+                            {% endif %}
+                            <p><a href="{% url 'employee_list' username=user.username %}">Employee List</a></p>
+                            <p><a href="{% url 'attendanceList' username=user.username %}">Attendance List</a></p>
+                            <p><a href="{% url 'schedule_list' username=user.username %}">Schedule List</a></p>
+                            <p><a href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></p>
+
+                    {% endif %}
+                    
+                    <!-- Utilities Links Section -->
+
+                        <h3>Utilities</h3>
+                        <p><a href="{% url 'payslip' username=user.username %}">Pay Slip</a></p>
+                        <p><a href="{% url 'schedule_create' username=user.username %}">Schedule</a></p>
+
                 </div>
             </div>
         {% else %}
-        
+            <div class="d-flex justify-content-center">
+                <a class="btn btn-primary" href="{% url 'login' %}">Login</a>
+            </div>
         {% endif %}
     </div>
+    
 {% endblock %}
+
+
+
+

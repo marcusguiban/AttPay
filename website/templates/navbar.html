@@ -8,41 +8,102 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% if user.is_authenticated %}
           {% if user.is_superuser %}
-            <li class="nav-item">
-              <span class="nav-link">|</span>
+
+            <li class="nav-item mx-2">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
             </li>
+
+            <div class="dropdown mx-2">
+              <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Utilities
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'payslip' username=user.username %}">Pay Slip</a></li>
+                <li><a class="dropdown-item" href="{% url 'schedule_create' username=user.username %}">Schedule</a></li>
+              </ul>
+            </div>
+
+            <div class="dropdown mx-2">
+              <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Register
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'employee_register' username=user.username %}">Register Employee</a></li>
+                <li><a class="dropdown-item" href="{% url 'supervisor_register' username=user.username %}">Register Supervisor</a></li>
+              </ul>
+            </div>
+
+            <div class="dropdown mx-2">
+              <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Lists
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'employee_list' username=user.username %}">Employee List</a></li>
+                <li><a class="dropdown-item" href="{% url 'supervisor_list' username=user.username %}">Supervisor List</a></li>
+                <li><a class="dropdown-item" href="{% url 'attendanceList' username=user.username %}">Attendance List</a></li>
+                <li><a class="dropdown-item" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></li>
+                <li><a class="dropdown-item" href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></li>
+              </ul>
+            </div>
           {% elif user.is_supervisor %}
-            <li class="nav-item">
-              <span class="nav-link">|</span>
-            </li>
+
+          <li class="nav-item mx-2">
+            <a class="nav-link" href="{% url 'home' %}">Home</a>
+          </li>
+          <div class="dropdown mx-2">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Utilities
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'time_In' username=user.username %}">Time in</a></li>
+              <li><a class="dropdown-item" href="{% url 'payslip' username=user.username %}">Pay Slip</a></li>
+              <li><a class="dropdown-item" href="{% url 'schedule_create' username=user.username %}">Schedule</a></li>
+            </ul>
+          </div>
+          <div class="dropdown mx-2">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Register
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'employee_register' username=user.username %}">Register Employee</a></li>
+            </ul>
+          </div>
+
+          <div class="dropdown mx-2">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Lists
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'employee_list' username=user.username %}">Employee List</a></li>
+              <li><a class="dropdown-item" href="{% url 'attendanceList' username=user.username %}">Attendance List</a></li>
+              <li><a class="dropdown-item" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></li>
+              <li><a class="dropdown-item" href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></li>
+            </ul>
+          </div>
+          {% elif user.is_employee %}
+
+          <li class="nav-item mx-2">
+            <a class="nav-link" href="{% url 'home' %}">Home</a>
+          </li>
+
+          <li class="nav-item mx-2">
+            <a class="btn btn-secondary" href="{% url 'time_In' username=user.username %}">Time in</a>
+          </li>
+
+          <li class="nav-item mx-2">
+            <a class="btn btn-secondary" href="{% url 'attendanceList' username=user.username %}">Attendance List</a>
+          </li>
+
           {% endif %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'time_In' username=request.user.username %}">Time IN</a>
-          </li>
-          <li class="nav-item">
-            <span class="nav-link">|</span>
-          </li>
         {% endif %}
       </ul>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         {% if user.is_authenticated %}
-          <li class="nav-item">
+          <li class="nav-item mx-2">
             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'payslip'  username=request.user.username %}">Payslip</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'payslip_list'  username=request.user.username %}">Payslip List</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'schedule_create'  username=request.user.username %}">Schedule Create</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'schedule_list'  username=request.user.username %}">Schedule list</a>
-          </li>
         {% else %}
-          <li class="nav-item">
+          <li class="nav-item mx-2">
             <a class="nav-link" href="{% url 'login' %}">Login</a>
           </li>
         {% endif %}
@@ -50,3 +111,4 @@
     </div>
   </div>
 </nav>
+

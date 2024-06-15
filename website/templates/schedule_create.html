@@ -2,20 +2,90 @@
 {% block content %}
 
 <div class="col-md-6 offset-md-3">
-<h1>Add Schedule</h1>
-<br/>
+  <h1>Add Schedule</h1>
+  <br/>
+  <form method="POST" action="{% url 'schedule_create' username=request.user.username %}">
+    {% csrf_token %}
 
-<form method="POST" action="{% url 'schedule_create' username=request.user.username%}">
-	{% csrf_token %}
+    <div class="mb-3">
+      <label for="id_employeeID">Employee ID</label>
+      {{ form.employeeID }}
+    </div>
 
-	{{ form.as_p }}
+    <div class="mb-3 row">
+      <label class="col-form-label col-sm-3" for="id_monday_start">Monday</label>
+      <div class="col-sm-4">
+        {{ form.monday_start }}
+      </div>
+      <div class="col-sm-4">
+        {{ form.monday_end }}
+      </div>
+    </div>
+    
+    <div class="mb-3 row">
+      <label class="col-form-label col-sm-3" for="id_tuesday_start">Tuesday</label>
+      <div class="col-sm-4">
+        {{ form.tuesday_start }}
+      </div>
+      <div class="col-sm-4">
+        {{ form.tuesday_end }}
+      </div>
+    </div>
 
-<br/>
-  <button type="submit" class="btn btn-secondary">Create Schedule</button>
-   <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+    <div class="mb-3 row">
+      <label class="col-form-label col-sm-3" for="id_wednesday_start">Wednesday</label>
+      <div class="col-sm-4">
+        {{ form.wednesday_start }}
+      </div>
+      <div class="col-sm-4">
+        {{ form.wednesday_end }}
+      </div>
+    </div>
 
-</form>
+    <div class="mb-3 row">
+      <label class="col-form-label col-sm-3" for="id_thursday_start">Thursday</label>
+      <div class="col-sm-4">
+        {{ form.thursday_start }}
+      </div>
+      <div class="col-sm-4">
+        {{ form.thursday_end }}
+      </div>
+    </div>
 
+    <div class="mb-3 row">
+      <label class="col-form-label col-sm-3" for="id_friday_start">Friday</label>
+      <div class="col-sm-4">
+        {{ form.friday_start }}
+      </div>
+      <div class="col-sm-4">
+        {{ form.friday_end }}
+      </div>
+    </div>
+
+    <div class="mb-3 row">
+      <label class="col-form-label col-sm-3" for="id_saturday_start">Saturday</label>
+      <div class="col-sm-4">
+        {{ form.saturday_start }}
+      </div>
+      <div class="col-sm-4">
+        {{ form.saturday_end }}
+      </div>
+    </div>
+
+    <div class="mb-3 row">
+      <label class="col-form-label col-sm-3" for="id_sunday_start">Sunday</label>
+      <div class="col-sm-4">
+        {{ form.sunday_start }}
+      </div>
+      <div class="col-sm-4">
+        {{ form.sunday_end }}
+      </div>
+    </div>
+
+    <br/>
+    <button type="submit" class="btn btn-secondary">Create Schedule</button>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+  </form>
 </div>
 
 {% endblock %}

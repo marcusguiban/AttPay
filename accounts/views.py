@@ -5,7 +5,7 @@ from .forms import EmployeeSignUpForm, SupervisorSignUpForm, EmployeeUpdateForm,
 from django.views.generic import CreateView
 from django.contrib import messages
 from django.urls import reverse
-from website.models import Attendance
+from website.models import Attendance, Schedule, PaySlip
 from django.views import View
 def home(request):
     return render(request, 'home.html',)
@@ -86,7 +86,11 @@ def employee_record(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
         employee_record = Employee.objects.get(user_id=pk)
         attendances = Attendance.objects.filter(employeeID=pk)
-        return render(request, 'employee_record.html', {'employee_record': employee_record, 'attendances': attendances, 'username': username})
+        return render(request, 'employee_record.html', {
+             'employee_record': employee_record, 
+             'attendances': attendances, 
+             'username': username
+             })
     else:
         messages.success(request, "You must be logged in to view that page")
         return redirect('home')
@@ -95,10 +99,20 @@ def supervisor_record(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
         supervisor_record = Supervisor.objects.get(user_id=pk)
         attendances = Attendance.objects.filter(employeeID=pk)
-        return render(request, 'supervisor_record.html', {'supervisor_record': supervisor_record, 'attendances': attendances,'username': username})
+        schedules = Schedule.objects.filter(employeeID=pk)
+        payslips = PaySlip.objects.filter(employeeID=pk)
+        return render(request, 'supervisor_record.html', {
+            'supervisor_record': supervisor_record, 
+            'attendances': attendances, 
+            'schedules': schedules, 
+            'payslips': payslips,
+            'username': username
+        })
     else:
         messages.success(request, "You must be logged in to view that page")
         return redirect('home')
+
+
 
 
 

@@ -23,7 +23,7 @@
             <strong>ID: </strong>{{ employee_record.user.id }}
         </p>
         <a href="{% url 'attendanceList' username=request.user.username%}" class="btn btn-primary">Back</a>
-        {% comment %} {% if user.is_superuser %} {% endcomment %}
+
         <a href="{% url 'delete_employee'  username=request.user.username pk=employee_record.user.id %}" class="btn btn-danger">Delete</a>
         <a href="{% url 'employee_update'  username=request.user.username pk=employee_record.user.id %}" class="btn btn-primary">Edit</a>
     </div>
@@ -50,13 +50,14 @@
     </tr>
 </thead>
 <tbody>
+
 {% for attendance in attendances %}
 <tr>
     <td>{{ attendance.date }}</td>
     <td>{{ attendance.employee_Name }}</td>
     <td>{{ attendance.time_in }}</td>
     <td>{{ attendance.time_out }}</td>
-    <td>{{ attendance.time_difference }}</td>
+    <td>{{ attendance.working_hours }}</td>
     <td>{{ attendance.salary }}</td>
     <td>{{ attendance.salary_computation }}</td> 
     <td>{{ attendance.duty_location }}</td>
@@ -70,5 +71,6 @@
 {% endfor %}
 </tbody>
 </table>
+
 {% endif %}
 {% endblock %}

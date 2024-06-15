@@ -24,7 +24,7 @@ def login_user(request):
         if user is not None:
             login(request, user)
             messages.success(request, "You have been logged in!")
-            return redirect(reverse('welcome', kwargs={'username': username}))
+            return redirect(reverse('home'))
         else:
             messages.error(request, "Invalid credentials")
             return redirect('login')

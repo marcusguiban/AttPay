@@ -62,7 +62,6 @@ class SupervisorUpdateForm(ModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.EmailField(required=True)
-    on_duty = forms.BooleanField(required=False)
     class Meta:
         model = Supervisor
         fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation', 'on_duty']
@@ -74,7 +73,7 @@ class SupervisorUpdateForm(ModelForm):
             self.fields['first_name'].initial = self.instance.user.first_name
             self.fields['last_name'].initial = self.instance.user.last_name
             self.fields['email'].initial = self.instance.user.email
-            self.fields['on_duty'].initial = self.instance.user.on_duty
+        
 
     def save(self, commit=True):
         instance = super().save(commit=False)
