@@ -1,7 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h2>Welcome, {{ username }}</h2>
+
+<form method="GET" action="{% url 'attendanceList' username=username %}" class="mb-3">
+  <div class="row">
+    <div class="col-md-3">
+      <input type="date" name="date" class="form-control" placeholder="Filter by date" value="{{ filter_date }}">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="employee_id" class="form-control" placeholder="Filter by employee ID" value="{{ filter_employee_id }}">
+    </div>
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{% url 'attendanceList' username=username %}" class="btn btn-secondary">Clear</a>
+    </div>
+  </div>
+</form>
 
 {% if attendances %}
   {% for attendance in attendances|dictsort:"date" %}
@@ -37,7 +53,7 @@
     {% endifchanged %}
     <tr>
         <td>{{ attendance.employee_Name }}</td>
-        <td>{{ attendance.id }}</td>
+        <td>{{ attendance.employeeID }}</td>
         <td>{{ attendance.time_in }}</td>
         <td>{{ attendance.time_out }}</td>
         <td>{{ attendance.time_difference }}</td>
@@ -73,6 +89,7 @@
 </div>
 {% endif %}
 {% endblock %}
+
 
 
 

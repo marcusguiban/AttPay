@@ -83,16 +83,35 @@ def supervisor_list(request, username):
 
 
 def employee_record(request, pk, username):
+    # Check if the user is authenticated and matches the requested username
     if request.user.is_authenticated and request.user.username == username:
-        employee_record = Employee.objects.get(user_id=pk)
+        # Retrieve the employee record based on the provided pk (user_id)
+        try:
+            employee_record = Employee.objects.get(user_id=pk)
+        except Employee.DoesNotExist:
+            messages.error(request, "Employee record does not exist")
+            return redirect('home')
+        
+        # Check if the authenticated user is an employee
+        if request.user.is_employee:
+            # If employee, check if the requested employee is the authenticated employee
+            if employee_record.user_id != request.user.id:
+                # If not, deny access and redirect
+                messages.error(request, "You are not authorized to view this employee's record")
+                return redirect('home')
+        
+        # Retrieve attendances related to the employee
         attendances = Attendance.objects.filter(employeeID=pk)
+        
+        # Render the employee record page with the necessary context
         return render(request, 'employee_record.html', {
-             'employee_record': employee_record, 
-             'attendances': attendances, 
-             'username': username
-             })
+            'employee_record': employee_record,
+            'attendances': attendances,
+            'username': username
+        })
     else:
-        messages.success(request, "You must be logged in to view that page")
+        # If user is not authenticated or username doesn't match, redirect to home
+        messages.error(request, "You must be logged in to view that page")
         return redirect('home')
     
 def supervisor_record(request, pk, username):

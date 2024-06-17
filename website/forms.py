@@ -5,7 +5,7 @@ from .models import Attendance, PaySlip
 class AttendanceForm(forms.ModelForm):
     employeeID = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "ID", "class": "form-control", "readonly": "readonly"}), label="")
     employee_Name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Name", "class": "form-control", "readonly": "readonly"}), label="")
-    duty_location = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Duty Location", "class": "form-control"}), label="")
+    duty_location = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Duty Location", "class": "form-control", "readonly": "readonly"}), label="")
     date = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={"placeholder": "Date", "class": "form-control", "type": "date", "readonly": "readonly"}), label="")
     time_in = forms.TimeField(required=True, widget=forms.widgets.TimeInput(attrs={"placeholder": "Time In", "class": "form-control", "type": "time", "readonly": "readonly"}), label="")
     

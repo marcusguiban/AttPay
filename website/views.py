@@ -7,6 +7,7 @@ from django.urls import reverse
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from django.utils import timezone
+from datetime import timedelta
 # Create your views here.
 
 # landing page
@@ -46,34 +47,47 @@ def logout_user(request):
     return redirect('home')
 
 
-# attendance_list admin
 def attendance_list(request, username):
     form = AttendanceFormAdmin(request.POST or None)
     if request.user.is_authenticated and request.user.username == username:
+        filter_date = request.GET.get('date')
+        filter_employee_id = request.GET.get('employee_id')
         if request.user.is_employee:
             employeeID = request.user.id
             attendances = Attendance.objects.filter(employeeID=employeeID)
         else:
             attendances = Attendance.objects.all()
-            
+        last_week = timezone.now() - timedelta(days=7)
+        attendances = attendances.filter(date__gte=last_week)
+        if filter_date:
+            attendances = attendances.filter(date=filter_date)
+        if filter_employee_id:
+            attendances = attendances.filter(employeeID=filter_employee_id)
         for attendance in attendances:
-            time_difference = datetime.combine(datetime.today(), attendance.time_out) - datetime.combine(datetime.today(), attendance.time_in)
-            hours = int(time_difference.total_seconds() / 3600)
-            minutes = int((time_difference.total_seconds() % 3600) / 60)
-            attendance.time_difference = f"{hours} hours {minutes} minutes"  # Formatting time_difference
-            computed_salary = calculate_computed_salary(attendance.time_in, attendance.time_out, attendance.salary)
-            attendance.computed_salary = computed_salary
+            attendance.computed_salary = calculate_computed_salary(attendance.time_in, attendance.time_out, attendance.salary)
 
         if request.user.is_superuser:
             if request.method == "POST" and form.is_valid():
-                add_record = form.save()
+                form.save()
                 messages.success(request, "Record Added")
                 return redirect('attendanceList', username=username)
-            return render(request, 'attendanceList.html', {'form': form, 'attendances': attendances, 'username': username})
-        return render(request, 'attendanceList.html', {'attendances': attendances, 'username': username})
+            return render(request, 'attendanceList.html', {
+                'form': form,
+                'attendances': attendances,
+                'username': username,
+                'filter_date': filter_date,
+                'filter_employee_id': filter_employee_id
+            })
+        return render(request, 'attendanceList.html', {
+            'attendances': attendances,
+            'username': username,
+            'filter_date': filter_date,
+            'filter_employee_id': filter_employee_id
+        })
     else:
         messages.success(request, "You must be logged in to view the attendance list")
         return redirect('home')
+
 
 # create time in
 def time_In(request, username):
@@ -83,6 +97,15 @@ def time_In(request, username):
             messages.error(request, "You have already timed in for today.")
             return redirect('attendanceList', username=username)
 
+        # Determine duty location based on IP address
+        ip_address = get_client_ip(request)
+        if ip_address == "192.168.68.121":
+            duty_location = "Test Location"
+        elif ip_address == "127.0.0.1":
+            duty_location = "Local Host"
+        else:
+            duty_location = "Location not recognized"
+
         if request.method == "POST":
             form = AttendanceForm(request.POST)
             if form.is_valid():
@@ -90,7 +113,8 @@ def time_In(request, username):
                 attendance.user = request.user
                 attendance.date = datetime.now().date()  # Set date to current date
                 attendance.time_in = datetime.now().time()  # Set time_in to current time
-                attendance.time_out = datetime.now().time()  # Set time_in to current time
+                attendance.time_out = datetime.now().time()  # Set time_out to current time
+                attendance.duty_location = duty_location  # Set the duty location based on IP address
                 attendance.save()
                 messages.success(request, "Record Added")
                 return redirect('attendanceList', username=username)
@@ -98,6 +122,7 @@ def time_In(request, username):
             initial_data = {
                 'employeeID': request.user.id,
                 'employee_Name': f"{request.user.first_name} {request.user.last_name}",
+                'duty_location': duty_location,  # Set initial duty location based on IP address
                 'date': datetime.now().date(),  # Set initial date to current date
                 'time_in': datetime.now().time(),  # Set initial time_in to current time
             }
@@ -105,6 +130,14 @@ def time_In(request, username):
         return render(request, 'timeIn.html', {'form': form})
     else:
         return redirect('attendanceList', username=username)
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
     # time out
 def time_Out(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:

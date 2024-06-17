@@ -49,30 +49,26 @@
                         <div class="mb-3">
                             <h3>Register</h3>
                             {% if user.is_superuser %}
-                                <p><a href="{% url 'supervisor_register' username=user.username %}">Register Supervisor</a></p>
+                                <p><a class="btn " href="{% url 'supervisor_register' username=user.username %}">Register Supervisor</a></p>
                             {% endif %}
-                            <p><a href="{% url 'employee_register' username=user.username %}">Register Employee</a></p>
+                            <p><a class="btn" href="{% url 'employee_register' username=user.username %}">Register Employee</a></p>
+                            <p><a class="btn " href="{% url 'supervisor_record' username=user.username pk=user.id%}">Profile</a></p>
                         </div>
                         
                         <!-- List Links Section -->
-
-                            <h3>List</h3>
-                            {% if user.is_superuser %}
-                                <p><a href="{% url 'supervisor_list' username=user.username %}">Supervisor List</a></p>
-                            {% endif %}
-                            <p><a href="{% url 'employee_list' username=user.username %}">Employee List</a></p>
-                            <p><a href="{% url 'attendanceList' username=user.username %}">Attendance List</a></p>
-                            <p><a href="{% url 'schedule_list' username=user.username %}">Schedule List</a></p>
-                            <p><a href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></p>
+                        <h3>List</h3>
+                        {% if user.is_superuser %}
+                            <p><a class="btn " href="{% url 'supervisor_list' username=user.username %}">Supervisor List</a></p>
+                        {% endif %}
+                        <p><a class="btn " href="{% url 'employee_list' username=user.username %}">Employee List</a></p>
+                        <p><a class="btn " href="{% url 'attendanceList' username=user.username %}">Attendance List</a></p>
+                        <p><a class="btn" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></p>
+                        <p><a class="btn " href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></p>
+                    {% endif %}
+                    {% if user.employee %}
+                    <p><a class="btn " href="{% url 'employee_record' username=user.username pk=user.id%}">Profile</a></p>
 
                     {% endif %}
-                    
-                    <!-- Utilities Links Section -->
-
-                        <h3>Utilities</h3>
-                        <p><a href="{% url 'payslip' username=user.username %}">Pay Slip</a></p>
-                        <p><a href="{% url 'schedule_create' username=user.username %}">Schedule</a></p>
-
                 </div>
             </div>
         {% else %}
@@ -81,8 +77,8 @@
             </div>
         {% endif %}
     </div>
-    
 {% endblock %}
+
 
 
 
