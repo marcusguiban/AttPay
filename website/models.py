@@ -13,6 +13,7 @@ class Attendance(models.Model):
     duty_location = models.CharField(max_length=50)
     salary = models.DecimalField(max_digits=10, decimal_places=2, default=450)
     salary_computation = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    paid = models.BooleanField(default=False)
 
 class PaySlip(models.Model):
     date_start = models.DateField()

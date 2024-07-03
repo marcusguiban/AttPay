@@ -19,7 +19,7 @@
               </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url 'payslip' username=user.username %}">Pay Slip</a></li>
-                <li><a class="dropdown-item" href="{% url 'schedule_create' username=user.username %}">Schedule</a></li>
+                {% comment %} <li><a class="dropdown-item" href="{% url 'schedule_create' username=user.username %}">Schedule</a></li> {% endcomment %}
               </ul>
             </div>
 
@@ -41,7 +41,7 @@
                 <li><a class="dropdown-item" href="{% url 'employee_list' username=user.username %}">Employee List</a></li>
                 <li><a class="dropdown-item" href="{% url 'supervisor_list' username=user.username %}">Supervisor List</a></li>
                 <li><a class="dropdown-item" href="{% url 'attendanceList' username=user.username %}">Attendance List</a></li>
-                <li><a class="dropdown-item" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></li>
+                {% comment %} <li><a class="dropdown-item" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></li> {% endcomment %}
                 <li><a class="dropdown-item" href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></li>
               </ul>
             </div>
@@ -76,7 +76,7 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'employee_list' username=user.username %}">Employee List</a></li>
               <li><a class="dropdown-item" href="{% url 'attendanceList' username=user.username %}">Attendance List</a></li>
-              <li><a class="dropdown-item" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></li>
+              {% comment %} <li><a class="dropdown-item" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></li> {% endcomment %}
               <li><a class="dropdown-item" href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></li>
             </ul>
           </div>
@@ -85,15 +85,6 @@
           <li class="nav-item mx-2">
             <a class="nav-link" href="{% url 'home' %}">Home</a>
           </li>
-
-          <li class="nav-item mx-2">
-            <a class="btn btn-secondary" href="{% url 'time_In' username=user.username %}">Time in</a>
-          </li>
-
-          <li class="nav-item mx-2">
-            <a class="btn btn-secondary" href="{% url 'attendanceList' username=user.username %}">Attendance List</a>
-          </li>
-
           {% endif %}
         {% endif %}
       </ul>

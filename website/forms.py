@@ -1,7 +1,8 @@
 
 from django import forms
 from .models import Attendance, PaySlip
-
+from django import forms
+from .models import Schedule
 class AttendanceForm(forms.ModelForm):
     employeeID = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "ID", "class": "form-control", "readonly": "readonly"}), label="")
     employee_Name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Name", "class": "form-control", "readonly": "readonly"}), label="")
@@ -11,7 +12,7 @@ class AttendanceForm(forms.ModelForm):
     
     class Meta:
         model = Attendance
-        exclude = ("user", "on_duty", "salary", "salary_computation", "working_hours","time_out")
+        exclude = ("user", "on_duty", "salary", "salary_computation", "paid", "working_hours","time_out")
 
 
 class AttendanceFormAdmin(forms.ModelForm):
@@ -48,7 +49,7 @@ class TimeOutForm(forms.ModelForm):
 
     class Meta:
         model = Attendance
-        exclude = ("user","first_name", "last_name","email","duty_location", "employeeID", "on_duty", "employee_Name", "date", "time_in")
+        exclude = ("user","first_name", "last_name","email","duty_location","paid", "employeeID", "on_duty", "employee_Name", "date", "time_in")
 
 
 class EditAttendanceFormAdmin(forms.ModelForm):
@@ -81,10 +82,7 @@ class PayslipForm(forms.ModelForm):
     class Meta:
         model = PaySlip
         fields = "__all__"
-        
 
-from django import forms
-from .models import Schedule
 
 class ScheduleForm(forms.ModelForm):
     employeeID = forms.CharField(

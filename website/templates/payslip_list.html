@@ -2,33 +2,37 @@
 
 {% block content %}
 
-{% if user.is_authenticated%}
+{% if user.is_authenticated %}
+<div class="container">
+  <h2 class="text-center my-4">Pay Slips</h2>
+
   <table class="table table-striped table-hover table-bordered">
     <thead class="table-dark">
       <tr>
-        <th scope="col">Start Date:</th>
-        <th scope="col">Start End:</th>
-        <th scope="col">Employee ID:</th>
-        <th scope="col">Employee Name:</th>
-        <th scope="col">Total Salary:</th>
-        <th scope="col">Paid:</th>
-        <th scope="col">Transaction ID:</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">End Date</th>
+        <th scope="col">Employee ID</th>
+        <th scope="col">Employee Name</th>
+        <th scope="col">Total Salary</th>
+        <th scope="col">Paid</th>
+        <th scope="col">Transaction ID</th>
       </tr>
     </thead>
     <tbody>
-  {%if paySlips %}
-  {% for paySlip in paySlips%}
-  <tr>
-    <td>{{ paySlip.date_start }} </td>
-    <td>{{ paySlip.date_end }}</td>
-    <td>{{ paySlip.employeeID }}</td>
-    <td>{{ paySlip.employee_name }}</td>
-    <td>{{ paySlip.total_salary }}</td>
-    <td>{{ paySlip.paid }}</td>
-    <td><a href="{% url 'payslip_record' username=request.user.username pk=paySlip.id %}" class="btn btn-primary">{{ paySlip.id }}</a></td> 
-  </tr>
-  {% endfor %}
-{% endif %}
+      {% for paySlip in paySlips %}
+      <tr>
+        <td>{{ paySlip.date_start }}</td>
+        <td>{{ paySlip.date_end }}</td>
+        <td>{{ paySlip.employeeID }}</td>
+        <td>{{ paySlip.employee_name }}</td>
+        <td>{{ paySlip.total_salary }}</td>
+        <td>{{ paySlip.paid }}</td>
+        <td><a href="{% url 'payslip_record' username=request.user.username pk=paySlip.id %}" class="btn btn-primary">{{ paySlip.id }}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endif %}
 
 {% endblock %}

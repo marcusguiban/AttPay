@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-52#61f3s#l!!ywp%5^04ej0r47y%xna+44uo9ivmig&(@l$+4q
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -84,6 +84,9 @@ DATABASES = {
         'PASSWORD': 'password', 
         'HOST': 'localhost',
         'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES', time_zone='+08:00';",
+        },
     }
 }
 
@@ -131,3 +134,4 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+TIME_ZONE = 'Asia/Manila'

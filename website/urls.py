@@ -12,7 +12,6 @@ urlpatterns = [
     path('attendacen/delete/<str:username>/<int:pk>', views.delete_record, name='delete_record'),
     path('attendance/time-out/<str:username>/<int:pk>', views.time_Out, name='time_Out'),
     path('attendace/edit/<str:username>/<int:pk>', views.AdminUpdateAttendanceRecord, name='Edit_attendance'),
-    path('welcome/<str:username>/', views.welcome_view, name='welcome'),
     path('notfound/', views.notfound, name='notfound'),
     path('payslip/<str:username>', views.create_payslip, name='payslip'),
     path('payslip/record/<str:username>', views.payslip_list, name='payslip_list'),
