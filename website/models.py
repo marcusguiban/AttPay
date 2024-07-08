@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class Attendance(models.Model):
     date = models.DateField()
     time_in = models.TimeField()
-    time_out = models.TimeField()
+    time_out = models.TimeField(null=True, blank=True)
     on_duty = models.BooleanField(default=True)
     working_hours = models.CharField(max_length=50, default="0 hours 0 minutes")
     employeeID = models.CharField(max_length=100, default="Unknown")

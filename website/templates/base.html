@@ -21,11 +21,11 @@
         {% if user.is_superuser %}
           background-image: url('{% static 'images/adminBG.png' %}');
         {% elif user.is_employee %}
-          background-image: url('{% static 'images/employe.jpg' %}');
+          background-image: url('{% static 'images/employeeBG.png' %}');
         {% elif user.is_supervisor %}
-          background-image: url('{% static 'images/officebg.jpg' %}');
+          background-image: url('{% static 'images/supervisorBG.png' %}');
         {% else %}
-          background-image: url('{% static 'images/default.jpg' %}');
+          background-image: url('{% static 'images/publicBG.png' %}');
         {% endif %}
         background-size: cover;
         background-position: center;

@@ -11,7 +11,7 @@ from django.utils.dateparse import parse_date
 from django.db.models import Sum
 from website.forms import PayslipForm
 from datetime import datetime
-
+from django.db import transaction
 def home(request):
     return render(request, 'home.html',)
 
@@ -98,92 +98,6 @@ def employee_record(request, pk, username):
             messages.error(request, "You are not authorized to view this employee's record")
             return redirect('home')
 
-        start_date = request.GET.get('start_date', None)
-        end_date = request.GET.get('end_date', None)
-
-        attendances = Attendance.objects.filter(employeeID=pk)
-        if start_date:
-            attendances = attendances.filter(date__gte=parse_date(start_date))
-        if end_date:
-            attendances = attendances.filter(date__lte=parse_date(end_date))
-
-        total_salary_computation = attendances.aggregate(Sum('salary_computation'))['salary_computation__sum'] or 0
-
-        schedules = Schedule.objects.filter(employeeID=pk)
-        payslips = PaySlip.objects.filter(employeeID=pk)
-
-        return render(request, 'employee_record.html', {
-            'employee_record': employee_record,
-            'attendances': attendances,
-            'schedules': schedules,
-            'payslips': payslips,
-            'username': username,
-            'total_salary_computation': total_salary_computation
-        })
-    else:
-        messages.error(request, "You must be logged in to view that page")
-        return redirect('home')
-
-
-# def supervisor_record(request, pk, username):
-#     if request.user.is_authenticated and request.user.username == username:
-#         try:
-#             supervisor_record = Supervisor.objects.get(user_id=pk)
-#         except Supervisor.DoesNotExist:
-#             messages.error(request, "Supervisor record does not exist")
-#             return redirect('home')
-
-#         if request.user.is_supervisor and supervisor_record.user_id != request.user.id:
-#             messages.error(request, "You are not authorized to view this supervisor's record")
-#             return redirect('home')
-
-#         start_date = request.GET.get('start_date')
-#         end_date = request.GET.get('end_date')
-
-#         # Filter attendances based on start_date and end_date
-#         attendances = Attendance.objects.filter(employeeID=pk)
-#         if start_date:
-#             attendances = attendances.filter(date__gte=start_date)
-#         if end_date:
-#             attendances = attendances.filter(date__lte=end_date)
-
-#         # Calculate total salary computation
-#         total_salary_computation = attendances.aggregate(total=Sum('salary_computation'))
-#         total_salary = total_salary_computation['total'] if total_salary_computation['total'] else 0
-
-#         schedules = Schedule.objects.filter(employeeID=pk)
-#         payslips = PaySlip.objects.filter(employeeID=pk)
-
-#         return render(request, 'supervisor_record.html', {
-#             'supervisor_record': supervisor_record,
-#             'attendances': attendances,
-#             'schedules': schedules,
-#             'payslips': payslips,
-#             'username': username,
-#             'total_salary_computation': {
-#                 'start_date': start_date,
-#                 'end_date': end_date,
-#                 'total': total_salary,
-#             }
-#         })
-#     else:
-#         messages.error(request, "You must be logged in to view that page")
-#         return redirect('home')
-
-
-
-def supervisor_record(request, pk, username):
-    if request.user.is_authenticated and request.user.username == username:
-        try:
-            supervisor_record = Supervisor.objects.get(user_id=pk)
-        except Supervisor.DoesNotExist:
-            messages.error(request, "Supervisor record does not exist")
-            return redirect('home')
-
-        if request.user.is_supervisor and supervisor_record.user_id != request.user.id:
-            messages.error(request, "You are not authorized to view this supervisor's record")
-            return redirect('home')
-
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
 
@@ -217,7 +131,7 @@ def supervisor_record(request, pk, username):
 
         initial_data = {
             'employeeID': pk,
-            'employee_name': f"{supervisor_record.user.first_name} {supervisor_record.user.last_name}",  # Corrected to use full name
+            'employee_name': f"{employee_record.user.first_name} {employee_record.user.last_name}",
             'date_start': start_date,
             'date_end': end_date,
             'total_salary': total_salary
@@ -229,6 +143,92 @@ def supervisor_record(request, pk, username):
             if form.is_valid():
                 form.save()
                 messages.success(request, "Payslip Created")
+                return redirect('home')
+
+        return render(request, 'employee_record.html', {
+            'employee_record': employee_record,
+            'attendances': attendances,
+            'schedules': schedules,
+            'payslips': payslips,
+            'username': username,
+            'total_salary_computation': {
+                'start_date': start_date,
+                'end_date': end_date,
+                'total': total_salary,
+            },
+            'form': form
+        })
+    else:
+        messages.error(request, "You must be logged in to view that page")
+        return redirect('home')
+
+
+def supervisor_record(request, pk, username):
+    if request.user.is_authenticated and request.user.username == username:
+        try:
+            supervisor_record = Supervisor.objects.get(user_id=pk)
+        except Supervisor.DoesNotExist:
+            messages.error(request, "Supervisor record does not exist")
+            return redirect('home')
+
+        if request.user.is_supervisor and supervisor_record.user_id != request.user.id:
+            messages.error(request, "You are not authorized to view this supervisor's record")
+            return redirect('home')
+
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+
+        # Filter attendances based on employee ID and paid status
+        attendances = Attendance.objects.filter(employeeID=pk, paid=False)
+
+        if start_date and end_date:
+            try:
+                start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+                end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                attendances = attendances.filter(date__range=(start_date, end_date))
+            except ValueError:
+                messages.error(request, "Invalid date format. Please use YYYY-MM-DD.")
+        elif start_date:
+            try:
+                start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+                attendances = attendances.filter(date__gte=start_date)
+            except ValueError:
+                messages.error(request, "Invalid start date format. Please use YYYY-MM-DD.")
+        elif end_date:
+            try:
+                end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                attendances = attendances.filter(date__lte=end_date)
+            except ValueError:
+                messages.error(request, "Invalid end date format. Please use YYYY-MM-DD.")
+
+        total_salary_computation = attendances.aggregate(total=Sum('salary_computation'))
+        total_salary = total_salary_computation['total'] if total_salary_computation['total'] else 0
+
+        schedules = Schedule.objects.filter(employeeID=pk)
+        payslips = PaySlip.objects.filter(employeeID=pk)
+
+        initial_data = {
+            'employeeID': pk,
+            'employee_name': f"{supervisor_record.user.first_name} {supervisor_record.user.last_name}",
+            'date_start': start_date,
+            'date_end': end_date,
+            'total_salary': total_salary
+        }
+
+        form = PayslipForm(request.POST or None, initial=initial_data)
+
+        if request.method == "POST":
+            if form.is_valid():
+                payslip_instance = form.save(commit=False)
+                payslip_instance.save()
+
+                # Update attendance records to paid=True
+                with transaction.atomic():
+                    for attendance in attendances:
+                        attendance.paid = True
+                        attendance.save()
+
+                messages.success(request, "Payslip Created and Attendance Records Updated")
                 return redirect('home')
 
         return render(request, 'supervisor_record.html', {
@@ -247,7 +247,6 @@ def supervisor_record(request, pk, username):
     else:
         messages.error(request, "You must be logged in to view that page")
         return redirect('home')
-
 
 def delete_employee(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:

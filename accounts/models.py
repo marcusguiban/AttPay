@@ -15,6 +15,7 @@ class Supervisor(models.Model):
     location = models.CharField(max_length=20)
     occupation = models.CharField(max_length=20)
     on_duty = models.BooleanField(default=False)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, default=450)
 
 
 class Employee(models.Model):
@@ -23,3 +24,4 @@ class Employee(models.Model):
     location = models.CharField(max_length=20)
     occupation = models.CharField(max_length=20)
     on_duty = models.BooleanField(default=False)
+    salary = models.DecimalField(max_digits=10, decimal_places=2, default=450)

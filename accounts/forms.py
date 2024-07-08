@@ -64,22 +64,18 @@ class SupervisorUpdateForm(ModelForm):
     email = forms.EmailField(required=True)
     class Meta:
         model = Supervisor
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation', 'on_duty']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation', 'on_duty', 'salary']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Set initial values for first_name, last_name, and email fields from associated User instance
         if self.instance.user:
             self.fields['first_name'].initial = self.instance.user.first_name
             self.fields['last_name'].initial = self.instance.user.last_name
             self.fields['email'].initial = self.instance.user.email
-        
-
     def save(self, commit=True):
         instance = super().save(commit=False)
         if commit:
             instance.save()
-            # Update associated User instance with the updated first_name, last_name, and email fields
             user = instance.user
             user.first_name = self.cleaned_data['first_name']
             user.last_name = self.cleaned_data['last_name']
@@ -97,7 +93,7 @@ class EmployeeUpdateForm(ModelForm):
     email = forms.EmailField(required=True)
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation', 'on_duty']
+        fields = ['first_name', 'last_name', 'email', 'phone_number', 'location', 'occupation', 'on_duty', 'salary']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

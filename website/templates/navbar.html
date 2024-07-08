@@ -50,14 +50,17 @@
           <li class="nav-item mx-2">
             <a class="nav-link" href="{% url 'home' %}">Home</a>
           </li>
+          <li class="nav-item mx-2">
+            <a class="nav-link" href="{% url 'supervisor_record' username=user.username pk=user.id %}">{{ user.email }}</a>
+          </li>
           <div class="dropdown mx-2">
             <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               Utilities
             </button>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'time_In' username=user.username %}">Time in</a></li>
-              <li><a class="dropdown-item" href="{% url 'payslip' username=user.username %}">Pay Slip</a></li>
-              <li><a class="dropdown-item" href="{% url 'schedule_create' username=user.username %}">Schedule</a></li>
+              {% comment %} <li><a class="dropdown-item" href="{% url 'payslip' username=user.username %}">Pay Slip</a></li> {% endcomment %}
+              {% comment %} <li><a class="dropdown-item" href="{% url 'schedule_create' username=user.username %}">Schedule</a></li> {% endcomment %}
             </ul>
           </div>
           <div class="dropdown mx-2">
@@ -76,7 +79,7 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'employee_list' username=user.username %}">Employee List</a></li>
               <li><a class="dropdown-item" href="{% url 'attendanceList' username=user.username %}">Attendance List</a></li>
-              {% comment %} <li><a class="dropdown-item" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></li> {% endcomment %}
+
               <li><a class="dropdown-item" href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></li>
             </ul>
           </div>
@@ -85,6 +88,11 @@
           <li class="nav-item mx-2">
             <a class="nav-link" href="{% url 'home' %}">Home</a>
           </li>
+          
+          <li class="nav-item mx-2">
+            <a class="nav-link" href="{% url 'employee_record' username=user.username pk=user.id %}">{{ user.email }}</a>
+          </li>
+         
           {% endif %}
         {% endif %}
       </ul>

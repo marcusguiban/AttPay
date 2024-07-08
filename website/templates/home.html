@@ -1,10 +1,33 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+
 <div class="container">
-    
-    <h2 class="text-center my-4">Welcome to Attpay, a system designed to track your attendance and payroll. It logs your clock-in and clock-out times, calculates your daily salary, and compiles this information to generate your payslip.</h2>
-    
+    <div id="carouselExample" style="width: 80%;" class="carousel slide mx-auto" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'images/Announcement.png' %}" class="d-block w-100" alt="First slide">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/timein.png' %}" class="d-block w-100" alt="Second slide">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/payslip.png' %}" class="d-block w-100" alt="Third slide">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+
     {% if user.is_authenticated %}
         <div class="d-flex flex-column align-items-center my-5">
             <div class="mb-3">
@@ -18,7 +41,17 @@
                 Open Menu
             </button>
         </div>
-        
+        <div class="text-center">
+            <marquee behavior="scroll" direction="left" style="margin: 40px; width: 80%;">
+                <img src="{% static 'images/bootstrap.png' %}" width="94" height="88" alt="Bootstrap" style="margin-right: 30px;">
+                <img src="{% static 'images/django.png' %}" width="240" height="88" alt="Django" style="margin-right: 30px;">
+                <img src="{% static 'images/python.png' %}" width="94" height="88" alt="Python" style="margin-right: 30px;">
+                <img src="{% static 'images/mysql.png' %}" width="94" height="88" alt="MySQL" style="margin-right: 30px;">
+                <img src="{% static 'images/feu.png' %}" width="94" height="88" alt="FEU" style="margin-right: 30px;">
+
+            </marquee>
+        </div>
+
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasSidebarLabel">User Menu</h5>
@@ -52,35 +85,32 @@
                     <div class="mb-3">
                         <h3>Register</h3>
                         {% if user.is_superuser %}
-                            <p><a class="btn " href="{% url 'supervisor_register' username=user.username %}">Register Supervisor</a></p>
+                            <p><a class="btn" href="{% url 'supervisor_register' username=user.username %}">Register Supervisor</a></p>
                         {% endif %}
                         <p><a class="btn" href="{% url 'employee_register' username=user.username %}">Register Employee</a></p>
-                        <p><a class="btn " href="{% url 'supervisor_record' username=user.username pk=user.id%}">Profile</a></p>
+                        <p><a class="btn" href="{% url 'supervisor_record' username=user.username pk=user.id %}">Profile</a></p>
                     </div>
                     <h3>List</h3>
                     {% if user.is_superuser %}
                         <p><a class="btn " href="{% url 'supervisor_list' username=user.username %}">Supervisor List</a></p>
                     {% endif %}
-                    <p><a class="btn " href="{% url 'employee_list' username=user.username %}">Employee List</a></p>
-                    <p><a class="btn " href="{% url 'attendanceList' username=user.username %}">Attendance List</a></p>
-                    {% comment %} <p><a class="btn" href="{% url 'schedule_list' username=user.username %}">Schedule List</a></p> {% endcomment %}
-                    <p><a class="btn " href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></p>
+                    <p><a class="btn" href="{% url 'employee_list' username=user.username %}">Employee List</a></p>
+                    <p><a class="btn" href="{% url 'attendanceList' username=user.username %}">Attendance List</a></p>
+                    <p><a class="btn" href="{% url 'payslip_list' username=user.username %}">Pay Slip List</a></p>
                 {% endif %}
                 {% if user.employee %}
-                    <p><a class="btn " href="{% url 'employee_record' username=user.username pk=user.id %}">Profile</a></p>
+                    <p><a class="btn" href="{% url 'employee_record' username=user.username pk=user.id %}">Profile</a></p>
                 {% endif %}
             </div>
         </div>
-        
+
     {% else %}
         <div class="d-flex justify-content-center">
-            <a class="btn btn-primary" href="{% url 'login' %}">Login</a>
+            <a class="btn btn-primary my-2" href="{% url 'login' %}">Login</a>
         </div>
     {% endif %}
 </div>
 {% endblock %}
-
-
 
 
 

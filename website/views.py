@@ -11,6 +11,7 @@ from datetime import timedelta
 from accounts.models import Employee, Supervisor
 import threading
 import time
+from django.db import transaction
 # Create your views here.
 
 # landing page
@@ -27,10 +28,10 @@ def login_user(request):
         if user is not None:
             login(request, user)
             if user.is_employee:
-                messages.success(request, "You have been logged in!")
+                messages.success(request, "Welcome! You have been logged in as an employee.")
                 return redirect(reverse('home'))
             else:
-                messages.success(request, "You have been logged in!")
+                messages.success(request, "Welcome! You have been logged in.")
                 return redirect(reverse('home'))
         else:
             messages.error(request, "Invalid credentials")
@@ -103,10 +104,8 @@ def set_off_duty(user_record):
     user_record.on_duty = False
     user_record.save()
 
-
 def time_In(request, username):
     if request.user.is_authenticated and (request.user.username == username or request.user.is_superuser):
-        # Check if the user is already on duty
         if request.user.is_employee:
             user_record = Employee.objects.get(user=request.user)
         elif request.user.is_supervisor:
@@ -118,7 +117,7 @@ def time_In(request, username):
         if user_record.on_duty:
             messages.error(request, "You are already on duty.")
             return redirect('attendanceList', username=username)
-
+        
         ip_address = get_client_ip(request)
         if ip_address == "192.168.68.121":
             duty_location = "Test Location"
@@ -126,35 +125,33 @@ def time_In(request, username):
             duty_location = "Local Host"
         else:
             duty_location = "Location not recognized"
-        
+        salary = user_record.salary
         if request.method == "POST":
             form = AttendanceForm(request.POST)
             if form.is_valid():
-                attendance = form.save(commit=False)
-                attendance.user = request.user
-                attendance.date = datetime.now().date()
-                attendance.time_in = datetime.now().time()
-                attendance.time_out = (datetime.now() + timedelta(hours=4)).time()
-                attendance.duty_location = duty_location  # Set the duty location based on IP address
-                attendance.save()
-                
-                # Update the on_duty status for the user
-                user_record.on_duty = True
-                user_record.save()
-
-                # Start a background thread to set on_duty to False after 12 hours
+                with transaction.atomic():
+                    attendance = form.save(commit=False)
+                    attendance.user = request.user
+                    attendance.date = datetime.now().date()
+                    attendance.time_in = datetime.now().time()
+                    attendance.time_out = None  # Set time_out to None
+                    attendance.duty_location = duty_location  # Set the duty location based on IP address
+                    attendance.salary = salary  # Set the salary
+                    attendance.save()
+                    user_record.on_duty = True
+                    user_record.save()
                 threading.Thread(target=set_off_duty, args=(user_record,)).start()
-
                 messages.success(request, "Record Added")
                 return redirect('attendanceList', username=username)
         else:
             initial_data = {
                 'employeeID': request.user.id,
                 'employee_Name': f"{request.user.first_name} {request.user.last_name}",
-                'duty_location': duty_location, 
+                'duty_location': duty_location,
                 'date': datetime.now().date(),
                 'time_in': datetime.now().time(),
-                'time_out': (datetime.now() + timedelta(hours=4)).time(),  # Initial value for time_out
+                'time_out': None,  
+                'salary': salary  
             }
             form = AttendanceForm(initial=initial_data)
         
@@ -168,6 +165,14 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+def calculate_computed_salary_timeout(time_in, time_out, salary):
+    time_difference = datetime.combine(datetime.today(), time_out) - datetime.combine(datetime.today(), time_in)
+    hours_difference = time_difference.total_seconds() / 3600
+    salary_decimal = Decimal(salary)
+    computed_salary = (salary_decimal / Decimal(9)) * Decimal(hours_difference)
+    computed_salary = computed_salary.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    return computed_salary
 
 def time_Out(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
@@ -188,39 +193,46 @@ def time_Out(request, pk, username):
             attendance_record = Attendance.objects.get(id=pk, employeeID=request.user.id)
             form = TimeOutForm(request.POST or None, instance=attendance_record)
             
-            computed_salary = None
-            working_hours = None
-            if attendance_record.time_in and attendance_record.time_out:
-                # Compute salary
-                computed_salary = calculate_computed_salary_timeout(attendance_record.time_in, attendance_record.salary)
-                
-                # Compute work hours
-                current_time = datetime.now().time()
+            if request.method == "POST":
+                if form.is_valid():
+                    # Set time_out to the current time
+                    form.instance.time_out = datetime.now().time()
+
+                    # Compute salary
+                    computed_salary = calculate_computed_salary_timeout(attendance_record.time_in, form.instance.time_out, attendance_record.salary)
+                    form.instance.salary_computation = computed_salary
+
+                    # Compute work hours
+                    time_difference = datetime.combine(datetime.today(), form.instance.time_out) - datetime.combine(datetime.today(), attendance_record.time_in)
+                    hours = int(time_difference.total_seconds() // 3600)
+                    minutes = int((time_difference.total_seconds() % 3600) // 60)
+                    working_hours = f"{hours} hours {minutes} minutes"
+                    form.instance.working_hours = working_hours
+
+                    form.instance.on_duty = False
+                    form.save()
+
+                    # Update the on_duty status for the user
+                    current_record.on_duty = False
+                    current_record.save()
+
+                    messages.success(request, "Record Has Been Updated!")
+                    return redirect('attendanceList', username=username)
+            
+            # Set initial values
+            current_time = datetime.now().time()
+            form.initial['time_out'] = current_time
+            
+            if attendance_record.time_in:
+                computed_salary = calculate_computed_salary_timeout(attendance_record.time_in, current_time, attendance_record.salary)
                 time_difference = datetime.combine(datetime.today(), current_time) - datetime.combine(datetime.today(), attendance_record.time_in)
                 hours = int(time_difference.total_seconds() // 3600)
                 minutes = int((time_difference.total_seconds() % 3600) // 60)
                 working_hours = f"{hours} hours {minutes} minutes"
-            
-            if computed_salary is not None:
                 form.initial['salary_computation'] = computed_salary
-            if working_hours is not None:
                 form.initial['working_hours'] = working_hours
-                
-            # Set initial value for time_out to current time
-            form.initial['time_out'] = datetime.now().time()
-            
-            if form.is_valid():
-                form.instance.on_duty = False
-                form.save()
 
-                # Update the on_duty status for the user
-                current_record.on_duty = False
-                current_record.save()
-
-                messages.success(request, "Record Has Been Updated!")
-                return redirect('attendanceList', username=username)
-            
-            return render(request, 'timeOut.html', {'form': form, 'computed_salary': computed_salary, 'working_hours': working_hours})
+            return render(request, 'timeOut.html', {'form': form})
         
         except Employee.DoesNotExist:
             messages.error(request, "Employee record does not exist.")
@@ -236,24 +248,30 @@ def time_Out(request, pk, username):
     else:
         messages.error(request, "You are not authorized to perform this action.")
         return redirect('attendanceList', username=username)
-
  # admin attendance individual record
 def attendance_record(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:
-        attendance_record = Attendance.objects.get(id=pk)
-        
-        time_difference = datetime.combine(datetime.today(), attendance_record.time_out) - datetime.combine(datetime.today(), attendance_record.time_in)
-        hours = int(time_difference.total_seconds() / 3600)
-        minutes = int((time_difference.total_seconds() % 3600) / 60)
-        formatted_time_difference = f"{hours} hours {minutes} minutes"  # Formatting time_difference
-        
-        computed_salary = calculate_computed_salary(attendance_record.time_in, attendance_record.time_out, attendance_record.salary)
-        
-        return render(request, 'attendanceRecord.html', {'attendance_record': attendance_record, 'computed_salary': computed_salary, 'formatted_time_difference': formatted_time_difference, 'username': username})
+        try:
+            attendance_record = Attendance.objects.get(id=pk)
+
+            # Handle cases where time_out is None
+            if attendance_record.time_out:
+                time_difference = datetime.combine(datetime.today(), attendance_record.time_out) - datetime.combine(datetime.today(), attendance_record.time_in)
+                hours = int(time_difference.total_seconds() / 3600)
+                minutes = int((time_difference.total_seconds() % 3600) / 60)
+                formatted_time_difference = f"{hours} hours {minutes} minutes"
+                computed_salary = calculate_computed_salary_timeout(attendance_record.time_in, attendance_record.time_out, attendance_record.salary)
+            else:
+                formatted_time_difference = "Time out not recorded"
+                computed_salary = Decimal('0.00')
+                
+            return render(request, 'attendanceRecord.html', {'attendance_record': attendance_record, 'computed_salary': computed_salary, 'formatted_time_difference': formatted_time_difference, 'username': username})
+        except Attendance.DoesNotExist:
+            messages.error(request, "Attendance record does not exist.")
+            return redirect('attendanceList', username=username)
     else:
         messages.success(request, "You must be logged in to view that page")
         return redirect('home')
-
 
     # deletion of record
 def delete_record(request, pk,username):
@@ -415,14 +433,6 @@ def calculate_computed_salary(time_in, time_out, salary):
     computed_salary = computed_salary.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
     return computed_salary
 
-def calculate_computed_salary_timeout(time_in, salary):
-    current_time = datetime.now().time()
-    time_difference = datetime.combine(datetime.today(), current_time) - datetime.combine(datetime.today(), time_in)
-    hours_difference = time_difference.total_seconds() / 3600
-    salary_decimal = Decimal(salary)
-    computed_salary = (salary_decimal / Decimal(9)) * Decimal(hours_difference)
-    computed_salary = computed_salary.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
-    return computed_salary
 
 
 
