@@ -20,25 +20,44 @@ class supervisor_register(CreateView):
     form_class = SupervisorSignUpForm
     template_name = 'supervisor_register.html'
 
-    def form_valid(self, form ):
-        form.save() 
-        messages.success(self.request, "Registration successful! You can now log in.")
-        return redirect('/')
-    def get_success_url(self):
-        return reverse('supervisor_list', kwargs={'username': self.request.user.username})
-
-class employee_register(CreateView):
-    model = User
-    form_class = EmployeeSignUpForm
-    template_name = 'employee_register.html'
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to access this page.")
+            return redirect('home')
+        if not request.user.is_superuser:
+            messages.error(request, "You do not have permission to access this page.")
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.save()
         messages.success(self.request, "Registration successful! You can now log in.")
         return redirect('/')
+
+    def get_success_url(self):
+        return reverse('supervisor_list', kwargs={'username': self.request.user.username})
+     
+class employee_register(CreateView):
+    model = User
+    form_class = EmployeeSignUpForm
+    template_name = 'employee_register.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to access this page.")
+            return redirect('home')
+        if not request.user.is_superuser and not request.user.is_supervisor:
+            messages.error(request, "You do not have permission to access this page.")
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Registration successful! You can now log in.")
+        return redirect('/')
+
     def get_success_url(self):
         return reverse('employee_list', kwargs={'username': self.request.user.username})
-    
 def employee_update(request, pk, username):
 	if request.user.is_authenticated and request.user.username == username:
 		current_record = Employee.objects.get(user_id=pk)

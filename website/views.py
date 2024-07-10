@@ -99,10 +99,16 @@ def attendance_list(request, username):
 def home(request):   
     return render(request, 'home.html')
 
+
 def set_off_duty(user_record):
-    time.sleep(10 * 60)  # Wait for 12 hours
-    user_record.on_duty = False
-    user_record.save()
+    time.sleep( 5 * 60)  
+    with transaction.atomic():
+        user_record.on_duty = False
+        user_record.save()
+        attendance = Attendance.objects.filter(employeeID=user_record.user.id, on_duty=True).last()
+        if attendance:
+            attendance.on_duty = False
+            attendance.save()
 
 def time_In(request, username):
     if request.user.is_authenticated and (request.user.username == username or request.user.is_superuser):
@@ -123,8 +129,10 @@ def time_In(request, username):
             duty_location = "Test Location"
         elif ip_address == "127.0.0.1":
             duty_location = "Local Host"
+        elif re.match(r"^172\.192\.\d+\.\d+$", ip_address):
+            duty_location = "FEU ALABANG"
         elif re.match(r"^172\.128\.2\.\d+$", ip_address):
-            duty_location = "FEU ALABANG WIFI 5th floor"
+            duty_location = "FEU ALABANG WIFI"
         else:
             duty_location = "Location not recognized"
         salary = user_record.salary
@@ -139,6 +147,7 @@ def time_In(request, username):
                     attendance.time_out = None  # Set time_out to None
                     attendance.duty_location = duty_location  # Set the duty location based on IP address
                     attendance.salary = salary  # Set the salary
+                    attendance.on_duty = True  # Set the on_duty to True
                     attendance.save()
                     user_record.on_duty = True
                     user_record.save()

@@ -121,11 +121,16 @@
 </table>
 {% if user.is_superuser or user.is_supervisor%}
 <h2>Create Payslip</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Create Payslip</button>
-</form>
+<div class="px-4">
+    <div style="max-width: 50%;">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Create Payslip</button>
+        </form>
+    </div>
+</div>
+
 {% endif %}
 <h2>Payslip History</h2>
 {% if payslips %}
