@@ -101,7 +101,7 @@ def employee_record(request, pk, username):
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
 
-        attendances = Attendance.objects.filter(employeeID=pk)
+        attendances = Attendance.objects.filter(employeeID=pk, paid=False)
 
         if start_date and end_date:
             try:
@@ -141,8 +141,16 @@ def employee_record(request, pk, username):
 
         if request.method == "POST":
             if form.is_valid():
-                form.save()
-                messages.success(request, "Payslip Created")
+                payslip_instance = form.save(commit=False)
+                payslip_instance.save()
+
+                # Update attendance records to paid=True
+                with transaction.atomic():
+                    for attendance in attendances:
+                        attendance.paid = True
+                        attendance.save()
+
+                messages.success(request, "Payslip Created and Attendance Records Updated")
                 return redirect('home')
 
         return render(request, 'employee_record.html', {
@@ -161,7 +169,6 @@ def employee_record(request, pk, username):
     else:
         messages.error(request, "You must be logged in to view that page")
         return redirect('home')
-
 
 def supervisor_record(request, pk, username):
     if request.user.is_authenticated and request.user.username == username:

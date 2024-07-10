@@ -13,7 +13,7 @@ import threading
 import time
 from django.db import transaction
 # Create your views here.
-
+import re
 # landing page
 
 
@@ -100,7 +100,7 @@ def home(request):
     return render(request, 'home.html')
 
 def set_off_duty(user_record):
-    time.sleep(12 * 3600)  # Wait for 12 hours
+    time.sleep(10 * 60)  # Wait for 12 hours
     user_record.on_duty = False
     user_record.save()
 
@@ -119,10 +119,12 @@ def time_In(request, username):
             return redirect('attendanceList', username=username)
         
         ip_address = get_client_ip(request)
-        if ip_address == "192.168.68.121":
+        if re.match(r"^192\.168\.68\.\d+$", ip_address):
             duty_location = "Test Location"
         elif ip_address == "127.0.0.1":
             duty_location = "Local Host"
+        elif re.match(r"^172\.128\.2\.\d+$", ip_address):
+            duty_location = "FEU ALABANG WIFI 5th floor"
         else:
             duty_location = "Location not recognized"
         salary = user_record.salary

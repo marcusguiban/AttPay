@@ -41,16 +41,7 @@
                 Open Menu
             </button>
         </div>
-        <div class="text-center">
-            <marquee behavior="scroll" direction="left" style="margin: 40px; width: 80%;">
-                <img src="{% static 'images/bootstrap.png' %}" width="94" height="88" alt="Bootstrap" style="margin-right: 30px;">
-                <img src="{% static 'images/django.png' %}" width="240" height="88" alt="Django" style="margin-right: 30px;">
-                <img src="{% static 'images/python.png' %}" width="94" height="88" alt="Python" style="margin-right: 30px;">
-                <img src="{% static 'images/mysql.png' %}" width="94" height="88" alt="MySQL" style="margin-right: 30px;">
-                <img src="{% static 'images/feu.png' %}" width="94" height="88" alt="FEU" style="margin-right: 30px;">
 
-            </marquee>
-        </div>
 
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
             <div class="offcanvas-header">
@@ -109,6 +100,16 @@
             <a class="btn btn-primary my-2" href="{% url 'login' %}">Login</a>
         </div>
     {% endif %}
+</div>
+<div class="text-center">
+    <marquee behavior="scroll" direction="left" style="margin: 40px; width: 80%;">
+        <img src="{% static 'images/bootstrap.png' %}" width="94" height="88" alt="Bootstrap" style="margin-right: 30px;">
+        <img src="{% static 'images/django.png' %}" width="240" height="88" alt="Django" style="margin-right: 30px;">
+        <img src="{% static 'images/python.png' %}" width="94" height="88" alt="Python" style="margin-right: 30px;">
+        <img src="{% static 'images/mysql.png' %}" width="94" height="88" alt="MySQL" style="margin-right: 30px;">
+        <img src="{% static 'images/feu.png' %}" width="94" height="88" alt="FEU" style="margin-right: 30px;">
+
+    </marquee>
 </div>
 {% endblock %}
 
