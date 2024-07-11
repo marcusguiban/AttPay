@@ -39,7 +39,9 @@
              {% elif user.is_supervisor %}
              <a href="{% url 'delete_record'  username=request.user.username pk=attendance_record.id %}" class="btn btn-danger">Delete</a>
              {% endif %}
+             {% if attendance.paid %}
             <a href="{% url 'time_Out' username=request.user.username pk=attendance_record.id %}" class="btn btn-secondary">Time Out</a> 
-    </div>
+            {% endif %}
+        </div>
   </div>
 {% endblock %}

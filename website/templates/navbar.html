@@ -19,7 +19,6 @@
               </button>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{% url 'payslip' username=user.username %}">Pay Slip</a></li>
-                {% comment %} <li><a class="dropdown-item" href="{% url 'schedule_create' username=user.username %}">Schedule</a></li> {% endcomment %}
               </ul>
             </div>
 
@@ -92,7 +91,9 @@
           <li class="nav-item mx-2">
             <a class="nav-link" href="{% url 'employee_record' username=user.username pk=user.id %}">{{ user.email }}</a>
           </li>
-         
+          <li class="nav-item mx-2">
+            <a class="nav-link" href="{% url 'attendanceList' username=user.username  %}">Attendance List</a>
+          </li>
           {% endif %}
         {% endif %}
       </ul>

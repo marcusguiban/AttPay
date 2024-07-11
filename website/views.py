@@ -12,36 +12,34 @@ from accounts.models import Employee, Supervisor
 import threading
 import time
 from django.db import transaction
-# Create your views here.
 import re
-# landing page
-
 
 def notfound(request):
     return render(request, '404.html',)
-# login page (admin)
 def login_user(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            if user.is_employee:
-                messages.success(request, "Welcome! You have been logged in as an employee.")
+    if not request.user.is_authenticated:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                if user.is_employee:
+                    messages.success(request, f"Welcome employee {username}! You have logged in succesfully")
+                else:
+                    messages.success(request, f"Welcome {username}! You have logged in succesfully")
                 return redirect(reverse('home'))
             else:
-                messages.success(request, "Welcome! You have been logged in.")
-                return redirect(reverse('home'))
+                messages.error(request, "Invalid credentials")
+                return redirect('login')
         else:
-            messages.error(request, "Invalid credentials")
-            return redirect('login')
+            return render(request, 'login.html')
     else:
-        return render(request, 'login.html')
-# logout
+        messages.success(request, "You are already logged in")
+        return redirect('home')
 def logout_user(request):
     logout(request)
-    messages.success(request, "You have been logged out.")
+    messages.success(request, "You have been logged out. Thank you for using Attpay")
     return redirect('home')
 
 
@@ -52,13 +50,11 @@ def attendance_list(request, username):
         filter_date = request.GET.get('date')
         filter_employee_id = request.GET.get('employee_id')
         filter_paid = request.GET.get('paid')  # Get the paid filter parameter
-
         if request.user.is_employee:
             employeeID = request.user.id
             attendances = Attendance.objects.filter(employeeID=employeeID)
         else:
             attendances = Attendance.objects.all()
-
         if filter_date:
             attendances = attendances.filter(date=filter_date)
         if filter_employee_id:
@@ -68,9 +64,7 @@ def attendance_list(request, username):
                 attendances = attendances.filter(paid=True)
             elif filter_paid.lower() == 'false':
                 attendances = attendances.filter(paid=False)
-
         attendances = attendances.order_by('-date')
-
         if request.user.is_superuser:
             if request.method == "POST" and form.is_valid():
                 form.save()
@@ -82,7 +76,7 @@ def attendance_list(request, username):
                 'username': username,
                 'filter_date': filter_date,
                 'filter_employee_id': filter_employee_id,
-                'filter_paid': filter_paid  # Pass filter_paid to template context
+                'filter_paid': filter_paid 
             })
 
         return render(request, 'attendanceList.html', {
@@ -90,12 +84,11 @@ def attendance_list(request, username):
             'username': username,
             'filter_date': filter_date,
             'filter_employee_id': filter_employee_id,
-            'filter_paid': filter_paid  # Pass filter_paid to template context
+            'filter_paid': filter_paid  
         })
     else:
         messages.success(request, "You must be logged in to view the attendance list")
         return redirect('home')
-
 def home(request):   
     return render(request, 'home.html')
 

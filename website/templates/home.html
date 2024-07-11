@@ -91,6 +91,7 @@
                 {% endif %}
                 {% if user.employee %}
                     <p><a class="btn" href="{% url 'employee_record' username=user.username pk=user.id %}">Profile</a></p>
+                    <p><a class="btn" href="{% url 'attendanceList' username=user.username %}">Attendance List</a></p>
                 {% endif %}
             </div>
         </div>

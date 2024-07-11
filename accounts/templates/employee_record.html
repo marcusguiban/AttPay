@@ -67,7 +67,7 @@
             <th scope="col">Duty Location</th>
             <th scope="col">Status</th>
             {% if user.is_employee %}
-            <th scope="col">Time out</th>
+            <th scope="col"></th>
             {% else %}
             <th scope="col">ID</th>
             {% endif %}
@@ -84,9 +84,25 @@
             <td>{{ attendance.salary }}</td>
             <td>{{ attendance.salary_computation }}</td>
             <td>{{ attendance.duty_location }}</td>
-            <td>{% if attendance.on_duty %}TIMED IN{% else %}TIMED OUT{% endif %}</td>
+            <td>{% if attendance.on_duty %}<p class="text-primary">Timed In</p>{% else %} <p class="text-success">Successful</p>{% endif %}</td>
             {% if user.is_employee %}
-            <td><a href="{% url 'time_Out' username=request.user.username pk=attendance.id %}" class="btn btn-primary">Time Out</a></td>
+            {% if attendance.on_duty %}
+            <td style="text-align: center;">
+                <a href="{% url 'time_Out' username=request.user.username pk=attendance.id %}" class="btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                  </svg>
+                </a>
+              </td>
+        {% else %}
+        <td style="text-align: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+              <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+            </svg>
+          </td>
+          
+        {% endif %}
             {% else %}
             <td><a href="{% url 'attendance_record' username=username pk=attendance.id %}" class="btn btn-primary">{{ attendance.id }}</a></td>
             {% endif %}
@@ -143,7 +159,6 @@
             <th scope="col">Employee Name</th>
             <th scope="col">Total Salary</th>
             <th scope="col">Paid</th>
-            <th scope="col">Transaction ID</th>
         </tr>
     </thead>
     <tbody>
@@ -154,8 +169,16 @@
             <td>{{ payslip.employeeID }}</td>
             <td>{{ payslip.employee_name }}</td>
             <td>{{ payslip.total_salary }}</td>
-            <td>{{ payslip.paid }}</td>
-            <td>{{ payslip.transaction_id }}</td>
+            <td style="text-align: center;">{% if payslip.paid %}            
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+              </svg>
+              {% else %} 
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-x-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5M6.854 5.146a.5.5 0 1 0-.708.708L7.293 7 6.146 8.146a.5.5 0 1 0 .708.708L8 7.707l1.146 1.147a.5.5 0 1 0 .708-.708L8.707 7l1.147-1.146a.5.5 0 0 0-.708-.708L8 6.293z"/>
+              </svg>
+              {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
